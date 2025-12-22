@@ -26,26 +26,13 @@
         }
         .logo-container {
             position: relative;
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.15); /* 로고 가시성 확보 */
             padding: 4px;
             border-radius: 10px;
             box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
             display: flex; align-items: center; justify-content: center;
         }
         .logo-img { width: 34px; height: 34px; object-fit: contain; }
-        
-        /* 인풋 필드 스타일 */
-        .login-input {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: white;
-            transition: all 0.3s;
-        }
-        .login-input:focus {
-            border-color: #3b82f6;
-            background: rgba(255, 255, 255, 0.1);
-            outline: none;
-        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -56,26 +43,21 @@
                 <div class="logo-container">
                     <img src="/images/imhereblack.jpg" alt="Logo" class="logo-img" onerror="this.src='https://via.placeholder.com/34/333/fff?text=IM'">
                 </div>
-                <span class="text-xl font-black tracking-tighter text-white uppercase">ImHere-Black</span>
+                <span class="text-xl font-black tracking-tighter text-white">ImHere-Black</span>
             </div>
             
             <div class="flex items-center gap-1 md:gap-2">
                 <button onclick="showTab('home')" class="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-all">
-                    <i data-lucide="home" class="w-4 h-4 text-blue-400"></i>
+                    <i data-lucide="layout-dashboard" class="w-4 h-4 text-blue-400"></i>
                     <span class="text-sm font-bold hidden sm:inline">홈</span>
                 </button>
                 <button onclick="showTab('schedule')" class="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-all">
                     <i data-lucide="truck" class="w-4 h-4 text-emerald-400"></i>
-                    <span class="text-sm font-bold hidden sm:inline">스케줄</span>
+                    <span class="text-sm font-bold hidden sm:inline">콜스케줄</span>
                 </button>
                 <button onclick="showTab('notice')" class="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-all">
-                    <i data-lucide="bell" class="w-4 h-4 text-amber-400"></i>
+                    <i data-lucide="bell-ring" class="w-4 h-4 text-amber-400"></i>
                     <span class="text-sm font-bold hidden sm:inline">알림</span>
-                </button>
-                <div class="w-px h-4 bg-white/10 mx-1"></div>
-                <button onclick="showTab('admin')" class="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 hover:bg-white/20 border border-white/10 transition-all">
-                    <i data-lucide="key" class="w-4 h-4 text-red-400"></i>
-                    <span class="text-sm font-bold hidden sm:inline">관리자</span>
                 </button>
             </div>
         </div>
@@ -84,8 +66,9 @@
     <main class="max-w-6xl mx-auto p-6 w-full flex-grow">
 
         <div id="home" class="tab-content active space-y-6">
-            <div class="glass-card rounded-[2rem] p-8 md:p-12 border-l-4 border-emerald-500 relative overflow-hidden">
+            <div class="glass-card rounded-[2rem] p-8 md:p-12 border-l-4 border-emerald-500 overflow-hidden relative">
                 <div class="relative z-10">
+                    <span class="bg-emerald-500/20 text-emerald-400 text-xs font-bold px-3 py-1 rounded-full mb-4 inline-block">24/7 전문 탁송 서비스</span>
                     <h2 class="text-3xl md:text-4xl font-black mb-4 leading-tight">
                         멈춰있는 시간을<br>안전한 이동으로 연결합니다.
                     </h2>
@@ -93,82 +76,110 @@
                         낮의 번잡함부터 밤의 정적까지, <span class="text-white">ImHere-Black</span>은 <br class="hidden md:block">
                         고객님의 소중한 차량과 기사님의 성실함을 가장 신뢰 있는 방식으로 잇습니다.
                     </p>
-                    <button onclick="showTab('about')" class="bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-xl font-bold transition-all text-sm">
-                        자세히 보기
-                    </button>
+                    <div class="flex gap-4">
+                        <button onclick="showTab('schedule')" class="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-3 rounded-xl font-bold transition-all flex items-center gap-2">
+                            <i data-lucide="play-circle" class="w-5 h-5"></i> 지금 배차 확인
+                        </button>
+                        <button onclick="showTab('about')" class="bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-xl font-bold transition-all">
+                            회사 소개
+                        </button>
+                    </div>
                 </div>
             </div>
 
             <div class="grid md:grid-cols-2 gap-6">
                 <div class="glass-card rounded-2xl p-6">
-                    <h3 class="flex items-center gap-2 font-bold text-lg mb-4"><i data-lucide="info" class="text-amber-500"></i> 최신 알림</h3>
-                    <div class="p-3 bg-white/5 rounded-lg border border-white/5 text-sm text-gray-400">새로운 공지사항이 대기 중입니다.</div>
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="flex items-center gap-2 font-bold text-lg"><i data-lucide="info" class="text-amber-500"></i> 긴급 공지</h3>
+                        <span onclick="showTab('notice')" class="text-xs text-gray-500 cursor-pointer">더보기</span>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex gap-3 items-start p-3 bg-white/5 rounded-lg border border-white/5">
+                            <div class="w-2 h-2 mt-1.5 rounded-full bg-amber-500 shrink-0"></div>
+                            <p class="text-sm text-gray-300">오늘 야간 고속도로 일부 구간 통제 안내</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="glass-card rounded-2xl p-6 text-center">
-                    <h3 class="font-bold text-lg mb-4">현재 배차 현황</h3>
-                    <p class="text-3xl font-black text-emerald-400 italic">"READY"</p>
-                </div>
-            </div>
-        </div>
 
-        <div id="admin" class="tab-content">
-            <div class="max-w-md mx-auto mt-12 glass-card rounded-3xl p-8 shadow-2xl border-t-4 border-red-500">
-                <div class="text-center mb-8">
-                    <div class="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i data-lucide="lock" class="w-8 h-8 text-red-500"></i>
+                <div class="glass-card rounded-2xl p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="flex items-center gap-2 font-bold text-lg"><i data-lucide="navigation" class="text-blue-500"></i> 내 대기 현황</h3>
+                        <span onclick="showTab('schedule')" class="text-xs text-gray-500 cursor-pointer">현황판</span>
                     </div>
-                    <h2 class="text-2xl font-black">ADMIN LOGIN</h2>
-                    <p class="text-sm text-gray-500 mt-2">관리자 권한이 필요한 페이지입니다.</p>
+                    <div class="p-4 bg-blue-500/10 rounded-xl border border-blue-500/20 text-center">
+                        <p class="text-xs text-blue-300 mb-1">현재 배차 대기 중</p>
+                        <p class="text-xl font-black text-white italic">"Ready to Drive"</p>
+                    </div>
                 </div>
-                
-                <form onsubmit="event.preventDefault(); alert('관리자 승인이 필요합니다.');" class="space-y-4">
-                    <div>
-                        <label class="text-xs font-bold text-gray-400 ml-1">ID</label>
-                        <input type="text" placeholder="관리자 아이디" class="w-full p-4 rounded-xl login-input mt-1">
-                    </div>
-                    <div>
-                        <label class="text-xs font-bold text-gray-400 ml-1">Password</label>
-                        <input type="password" placeholder="••••••••" class="w-full p-4 rounded-xl login-input mt-1">
-                    </div>
-                    <button class="w-full bg-red-600 hover:bg-red-500 text-white p-4 rounded-xl font-bold transition-all mt-4 shadow-lg shadow-red-900/20">
-                        시스템 접속
-                    </button>
-                </form>
-                <p onclick="showTab('home')" class="text-center text-xs text-gray-600 mt-6 cursor-pointer hover:text-gray-400">메인으로 돌아가기</p>
             </div>
         </div>
 
         <div id="about" class="tab-content">
-            <div class="max-w-3xl mx-auto glass-card rounded-3xl p-10 text-center">
+            <div class="max-w-3xl mx-auto glass-card rounded-3xl p-8 md:p-12 text-center">
                 <div class="logo-container w-20 h-20 mx-auto mb-6">
                     <img src="/images/imhereblack.jpg" alt="Logo" class="w-full h-full object-contain rounded-lg">
                 </div>
-                <h2 class="text-3xl font-black mb-8 italic uppercase">Reliable Partner</h2>
-                <div class="space-y-6 text-gray-300 text-lg leading-relaxed text-left">
-                    <p>우리는 <span class="text-white font-bold">'기다림'</span>을 <span class="text-emerald-400 font-bold">'움직임'</span>으로 바꿉니다.</p>
-                    <p>낮에는 햇살 아래 뜨거운 열정으로, 밤에는 달빛 아래 고요한 책임감으로 기사님들이 안전하게 대기하고 신속하게 이동할 수 있는 환경을 만듭니다.</p>
+                <h2 class="text-3xl font-black mb-4">언제나 당신 곁에, ImHere-Black</h2>
+                <div class="h-1 w-12 bg-emerald-500 mx-auto mb-8"></div>
+                
+                <div class="space-y-6 text-gray-300 text-lg leading-relaxed text-left md:text-center">
+                    <p>
+                        우리는 <span class="text-white font-bold">'기다림'</span>을 <span class="text-emerald-400 font-bold">'움직임'</span>으로 바꿉니다.
+                    </p>
+                    <p>
+                        낮에는 햇살 아래 뜨거운 열정으로, 밤에는 달빛 아래 고요한 책임감으로 <br class="hidden md:block">
+                        기사님들이 안전하게 대기하고 신속하게 이동할 수 있는 환경을 만듭니다.
+                    </p>
+                    <p>
+                        고객님의 소중한 자산인 차량을 내 차처럼 아끼는 마음, <br class="hidden md:block">
+                        그 신뢰가 끊기지 않도록 최고의 기술과 디자인으로 보답하겠습니다.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mt-12">
+                    <div class="p-4 bg-white/5 rounded-2xl">
+                        <p class="text-2xl font-black text-white">24h</p>
+                        <p class="text-xs text-gray-500">신속한 응대</p>
+                    </div>
+                    <div class="p-4 bg-white/5 rounded-2xl">
+                        <p class="text-2xl font-black text-white">Safe</p>
+                        <p class="text-xs text-gray-500">정직한 탁송</p>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div id="schedule" class="tab-content">
             <div class="glass-card rounded-2xl p-8">
-                <h2 class="text-2xl font-bold mb-4">콜스케줄 현황</h2>
-                <div class="text-gray-600 italic">배차 리스트가 비어있습니다.</div>
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                    <i data-lucide="list"></i> 오늘의 배차 리스트
+                </h2>
+                <div class="space-y-4">
+                    <div class="p-4 glass-card rounded-xl flex justify-between items-center border-l-4 border-gray-500">
+                        <div>
+                            <p class="font-bold">서울 → 평택 (승용)</p>
+                            <p class="text-xs text-gray-500">배차 완료</p>
+                        </div>
+                        <span class="text-sm font-bold">13:00</span>
+                    </div>
+                </div>
             </div>
         </div>
-        
+
         <div id="notice" class="tab-content">
             <div class="glass-card rounded-2xl p-8">
-                <h2 class="text-2xl font-bold mb-4">공지사항</h2>
-                <div class="text-gray-600 italic">최신 공지가 없습니다.</div>
+                <h2 class="text-2xl font-bold mb-6">고객센터 및 알림</h2>
+                <div class="p-4 bg-amber-500/10 rounded-xl border border-amber-500/20">
+                    <p class="text-sm font-bold text-amber-200 underline">긴급 정기 점검 공지</p>
+                    <p class="text-xs text-amber-500/80 mt-1">안전한 서비스 이용을 위해 오늘 자정 점검이 예정되어 있습니다.</p>
+                </div>
             </div>
         </div>
-
     </main>
 
-    <footer class="p-8 text-center text-gray-600 text-[10px] tracking-widest">
-        © 2025 IMHERE-BLACK ENTERPRISE
+    <footer class="p-8 text-center border-t border-white/5">
+        <p class="text-gray-600 text-[10px] tracking-widest uppercase">Reliable Delivery Partner</p>
+        <p class="text-gray-500 text-xs mt-2">© 2025 ImHere-Black. All rights reserved.</p>
     </footer>
 
     <script>
