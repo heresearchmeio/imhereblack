@@ -30,10 +30,13 @@
         /* Navigation */
         nav {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 20px 40px; border-bottom: 1px solid var(--border-color);
-            position: sticky; top: 0; background: rgba(0,0,0,0.9); z-index: 1000;
+            padding: 15px 40px; border-bottom: 1px solid var(--border-color);
+            position: sticky; top: 0; background: rgba(0,0,0,0.95); z-index: 1000;
         }
-        .logo { font-size: 20px; font-weight: 700; letter-spacing: 5px; color: var(--accent-gold); }
+        .nav-logo-area { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+        .nav-logo-img { height: 35px; width: auto; transition: 0.3s; }
+        .nav-logo-text { font-size: 18px; font-weight: 700; letter-spacing: 3px; color: var(--accent-gold); }
+
         .nav-menu { display: flex; gap: 30px; }
         .nav-item { cursor: pointer; font-size: 13px; color: var(--text-dim); transition: 0.3s; }
         .nav-item:hover, .nav-item.active { color: var(--accent-gold); }
@@ -47,64 +50,46 @@
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Header Info */
-        .header-box { margin-bottom: 40px; text-align: left; }
-        .header-box h1 { font-size: 32px; font-weight: 100; margin-bottom: 10px; }
-        .role-switch { margin-top: 10px; font-size: 11px; border: 1px solid var(--accent-gold); padding: 4px 10px; border-radius: 20px; color: var(--accent-gold); cursor: pointer; }
+        /* Main Header with Logo */
+        .header-box { margin-bottom: 60px; text-align: center; }
+        .main-logo-img { 
+            width: 150px; height: auto; margin-bottom: 20px; 
+            border-radius: 50%; border: 1px solid var(--border-color);
+            padding: 5px; transition: 0.5s;
+        }
+        .main-logo-img:hover { transform: scale(1.05); border-color: var(--accent-gold); }
+        .header-box h1 { font-size: 36px; font-weight: 100; margin-bottom: 10px; letter-spacing: 8px; color: var(--text-main); }
+        .subtitle { font-size: 12px; color: var(--text-dim); letter-spacing: 3px; text-transform: uppercase; }
+        .role-switch { 
+            display: inline-block; margin-top: 20px; font-size: 11px; 
+            border: 1px solid var(--accent-gold); padding: 5px 15px; 
+            border-radius: 20px; color: var(--accent-gold); cursor: pointer; 
+            transition: 0.3s;
+        }
+        .role-switch:hover { background: var(--accent-gold); color: #000; }
 
-        /* Board Style (Order List) */
+        /* Order Cards & Tables (기존 스타일 유지) */
         .order-card {
             background: var(--card-bg); border: 1px solid var(--border-color);
             padding: 25px; border-radius: 4px; margin-bottom: 15px;
             display: flex; justify-content: space-between; align-items: center;
-            transition: 0.3s;
         }
-        .order-card:hover { border-color: var(--accent-gold); }
-        .order-info h3 { font-size: 18px; color: var(--accent-gold); margin-bottom: 5px; }
-        .order-info p { font-size: 14px; color: var(--text-dim); }
-        .order-meta { text-align: right; }
-        .status-badge { 
-            display: inline-block; padding: 5px 12px; font-size: 11px; 
-            border-radius: 2px; margin-bottom: 10px; text-transform: uppercase;
-        }
+        .status-badge { display: inline-block; padding: 5px 12px; font-size: 11px; border-radius: 2px; margin-bottom: 10px; }
         .status-wait { background: #333; color: #eee; }
-        .status-ongoing { background: var(--status-blue); color: #fff; }
-
-        /* Calendar Placeholder UI */
-        .calendar-grid {
-            display: grid; grid-template-columns: repeat(7, 1fr);
-            gap: 5px; background: var(--border-color); border: 1px solid var(--border-color);
-        }
-        .calendar-day { 
-            background: var(--bg-color); height: 120px; padding: 10px;
-            font-size: 12px; color: var(--text-dim);
-        }
-        .event-tag {
-            background: var(--accent-gold); color: #000; padding: 2px 5px;
-            border-radius: 2px; font-size: 10px; margin-top: 5px; cursor: pointer;
-            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-        }
-        .event-conflict { background: var(--status-red); color: #fff; }
-
-        /* Buttons */
-        .btn {
-            background: transparent; border: 1px solid var(--accent-gold);
-            color: var(--accent-gold); padding: 8px 20px; cursor: pointer;
-            font-size: 12px; transition: 0.3s;
-        }
+        .btn { border: 1px solid var(--accent-gold); color: var(--accent-gold); background: transparent; padding: 8px 20px; cursor: pointer; font-size: 12px; }
         .btn:hover { background: var(--accent-gold); color: #000; }
 
-        /* Modal */
-        #modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 2000;
-        }
+        /* Footer */
+        footer { text-align: center; padding: 40px; color: #333; font-size: 11px; letter-spacing: 1px; }
     </style>
 </head>
 <body>
 
 <nav>
-    <div class="logo">IMBLACK</div>
+    <div class="nav-logo-area" onclick="location.reload()">
+        <img src="images/imhereblack.jpg" alt="IMBLACK Logo" class="nav-logo-img">
+        <span class="nav-logo-text">IMBLACK</span>
+    </div>
     <div class="nav-menu">
         <div class="nav-item active" onclick="showSection('orderBoard')">BOARD</div>
         <div class="nav-item" onclick="showSection('calendarView')">SCHEDULE</div>
@@ -114,9 +99,10 @@
 
 <div class="container">
     <header class="header-box">
-        <h1 id="pageTitle">Premium Orders</h1>
-        <p class="subtitle" id="pageSubtitle">최고급 세단과 검증된 드라이버의 만남</p>
-        <div class="role-switch" onclick="toggleRole()">현재 모드: <span id="currentRole">운영자</span> (클릭 시 전환)</div>
+        <img src="images/imhereblack.jpg" alt="IMBLACK Logo" class="main-logo-img">
+        <h1 id="pageTitle">IMBLACK</h1>
+        <p class="subtitle" id="pageSubtitle">Premium Driving Concierge</p>
+        <div class="role-switch" onclick="toggleRole()">MODE: <span id="currentRole">운영자</span></div>
     </header>
 
     <section id="orderBoard" class="page-section active">
@@ -125,123 +111,52 @@
                 <div class="order-info">
                     <span class="status-badge status-wait">승인 대기중</span>
                     <h3>VIP 고객 의전 (벤틀리 컨티넨탈 GT)</h3>
-                    <p><span class="material-icons" style="font-size:14px">schedule</span> 12월 24일 18:00 - 22:00</p>
-                    <p><span class="material-icons" style="font-size:14px">place</span> 청담동 메종 가든 → 인천공항 T2</p>
+                    <p><span class="material-icons" style="font-size:14px; vertical-align:middle;">schedule</span> 12월 24일 18:00 - 22:00</p>
                 </div>
                 <div class="order-meta">
                     <button class="btn" onclick="applyOrder('VIP 의전')">지원하기</button>
-                </div>
-            </div>
-
-            <div class="order-card">
-                <div class="order-info">
-                    <span class="status-badge status-ongoing">운행 중</span>
-                    <h3>정기 멤버십 수행 (S-Class)</h3>
-                    <p><span class="material-icons" style="font-size:14px">schedule</span> 12월 22일 14:00 - 19:00</p>
-                    <p><span class="material-icons" style="font-size:14px">person</span> 담당 기사: 김*호 프로</p>
-                </div>
-                <div class="order-meta">
-                    <button class="btn" onclick="updateStatus()">상태 업데이트</button>
                 </div>
             </div>
         </div>
     </section>
 
     <section id="calendarView" class="page-section">
-        <div style="margin-bottom: 20px; display: flex; justify-content: space-between;">
-            <h2>December 2025</h2>
-            <p style="color:var(--status-red); font-size:12px;">* 붉은색 표시는 중복 예약 경고입니다.</p>
-        </div>
-        <div class="calendar-grid">
-            <div class="calendar-day">21</div>
-            <div class="calendar-day">22
-                <div class="event-tag">14:00 S-Class</div>
-                <div class="event-tag event-conflict">15:00 중복 오더</div>
-            </div>
-            <div class="calendar-day">23</div>
-            <div class="calendar-day">24 <div class="event-tag">18:00 벤틀리</div></div>
-            <div class="calendar-day">25</div>
-            <div class="calendar-day">26</div>
-            <div class="calendar-day">27</div>
+        <h2 style="margin-bottom:20px; font-weight:300;">Concierge Schedule</h2>
+        <div style="background:#111; height:300px; display:flex; align-items:center; justify-content:center; border:1px solid #222;">
+            <p style="color:#444;">Google Calendar API 연결 대기 중...</p>
         </div>
     </section>
 
     <section id="driverManage" class="page-section">
-        <h2>Driver Management</h2>
-        <table style="width:100%; margin-top:20px; border-collapse: collapse; font-size: 14px;">
-            <tr style="border-bottom: 1px solid #333; text-align: left; color: var(--text-dim);">
-                <th style="padding:10px">성명</th>
-                <th>상태</th>
-                <th>권한</th>
-                <th>작업</th>
-            </tr>
-            <tr style="border-bottom: 1px solid #111;">
-                <td style="padding:15px">이*우 기사님</td>
-                <td><span style="color:var(--status-green)">운행 가능</span></td>
-                <td>승인됨</td>
-                <td><button class="btn" style="padding:3px 10px">로그 보기</button></td>
-            </tr>
-            <tr style="border-bottom: 1px solid #111;">
-                <td style="padding:15px">박*준 지원자</td>
-                <td><span style="color:var(--text-dim)">대기</span></td>
-                <td><span style="color:var(--status-red)">미승인</span></td>
-                <td><button class="btn" style="padding:3px 10px">권한 승인</button></td>
-            </tr>
-        </table>
+        <h2 style="margin-bottom:20px; font-weight:300;">Driver Management</h2>
+        <p style="color:#444;">기사 권한 승인 및 관리 모드입니다.</p>
     </section>
 </div>
 
-<div id="modal">
-    <div style="background:#111; padding:40px; border:1px solid var(--accent-gold); text-align:center;">
-        <h2 id="modalTitle">상태 업데이트</h2>
-        <div style="margin:20px 0; display:flex; gap:10px;">
-            <button class="btn" onclick="closeModal()">운행 시작</button>
-            <button class="btn" onclick="closeModal()">운행 종료</button>
-        </div>
-        <p onclick="closeModal()" style="cursor:pointer; font-size:12px; color:#555;">닫기</p>
-    </div>
-</div>
+<footer>
+    &copy; 2025 IMBLACK PREMIUM SERVICE. ALL RIGHTS RESERVED.
+</footer>
 
 <script>
-    let currentRole = 'admin'; // admin or driver
+    let currentRole = 'admin';
 
     function showSection(sectionId) {
         document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
         
         document.getElementById(sectionId).classList.add('active');
-        event.currentTarget.classList.add('active');
-        
-        const titles = {
-            'orderBoard': 'Premium Orders',
-            'calendarView': 'Concierge Schedule',
-            'driverManage': 'Driver Management'
-        };
-        document.getElementById('pageTitle').innerText = titles[sectionId];
+        const activeNav = Array.from(document.querySelectorAll('.nav-item')).find(el => el.innerText.toLowerCase() === (sectionId === 'orderBoard' ? 'board' : sectionId === 'calendarView' ? 'schedule' : 'drivers'));
+        if(activeNav) activeNav.classList.add('active');
     }
 
     function toggleRole() {
         currentRole = (currentRole === 'admin') ? 'driver' : 'admin';
         document.getElementById('currentRole').innerText = (currentRole === 'admin') ? '운영자' : '운전기사';
-        
-        // 역할에 따라 UI 변경 (간단 예시)
-        if(currentRole === 'driver') {
-            document.getElementById('pageSubtitle').innerText = "기사님, 오늘의 품격을 운전해 주세요.";
-        } else {
-            document.getElementById('pageSubtitle').innerText = "최고급 세단과 검증된 드라이버의 만남";
-        }
+        document.getElementById('pageSubtitle').innerText = (currentRole === 'admin') ? "Premium Driving Concierge" : "기사님, 오늘의 품격을 운전해 주세요.";
     }
 
     function applyOrder(name) {
         alert(name + " 오더에 지원하시겠습니까? 운영자의 승인 후 확정됩니다.");
-    }
-
-    function updateStatus() {
-        document.getElementById('modal').style.display = 'flex';
-    }
-
-    function closeModal() {
-        document.getElementById('modal').style.display = 'none';
     }
 </script>
 
