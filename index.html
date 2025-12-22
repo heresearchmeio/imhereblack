@@ -3,135 +3,197 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ImHere-Black Dashboard</title>
+    <title>ImHere-Black | Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-        body { font-family: 'Inter', sans-serif; }
+        @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;900&display=swap');
+        body { 
+            font-family: 'Pretendard', sans-serif; 
+            background-color: #0f172a; /* 아주 어두운 네이비 블랙 */
+            color: #f1f5f9;
+        }
         .tab-content { display: none; }
-        .tab-content.active { display: block; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s ease-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-900">
+<body class="min-h-screen">
 
-    <nav class="bg-white border-b sticky top-0 z-50 px-4 py-3 shadow-sm">
-        <div class="max-w-5xl mx-auto flex justify-between items-center">
-            <div onclick="showTab('about')" class="text-2xl font-black cursor-pointer hover:text-blue-600 transition-colors">
-                ImHere-Black
+    <nav class="sticky top-0 z-50 glass-card border-b border-white/10 px-4 py-4">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <div onclick="showTab('about')" class="flex items-center gap-2 cursor-pointer group">
+                <div class="bg-white p-1.5 rounded-lg group-hover:bg-blue-500 transition-colors">
+                    <i data-lucide="layout" class="w-6 h-6 text-black"></i>
+                </div>
+                <span class="text-xl font-black tracking-tighter">ImHere-Black</span>
             </div>
             
-            <div class="flex space-x-2 md:space-x-4 text-sm font-medium">
-                <button onclick="showTab('home')" class="flex items-center gap-1 px-3 py-2 rounded-lg hover:bg-gray-100">
-                    <i data-lucide="layout-dashboard" class="w-4 h-4"></i> <span class="hidden md:inline">홈</span>
+            <div class="flex items-center gap-2 md:gap-4">
+                <button onclick="showTab('home')" class="flex items-center gap-1.5 px-3 py-2 rounded-xl hover:bg-white/10 transition-all">
+                    <i data-lucide="home" class="w-4 h-4 text-blue-400"></i>
+                    <span class="text-sm font-semibold hidden sm:inline">홈</span>
                 </button>
-                <button onclick="showTab('schedule')" class="flex items-center gap-1 px-3 py-2 rounded-lg hover:bg-gray-100">
-                    <i data-lucide="calendar" class="w-4 h-4"></i> <span class="hidden md:inline">스케줄</span>
+                <button onclick="showTab('schedule')" class="flex items-center gap-1.5 px-3 py-2 rounded-xl hover:bg-white/10 transition-all">
+                    <i data-lucide="calendar" class="w-4 h-4 text-green-400"></i>
+                    <span class="text-sm font-semibold hidden sm:inline">콜스케줄</span>
                 </button>
-                <button onclick="showTab('notice')" class="flex items-center gap-1 px-3 py-2 rounded-lg hover:bg-gray-100">
-                    <i data-lucide="bell" class="w-4 h-4"></i> <span class="hidden md:inline">알림</span>
+                <button onclick="showTab('notice')" class="flex items-center gap-1.5 px-3 py-2 rounded-xl hover:bg-white/10 transition-all">
+                    <i data-lucide="bell" class="w-4 h-4 text-orange-400"></i>
+                    <span class="text-sm font-semibold hidden sm:inline">알림</span>
                 </button>
             </div>
         </div>
     </nav>
 
-    <main class="max-w-5xl mx-auto p-4 md:p-8">
-        
-        <section id="home" class="tab-content active space-y-6">
-            <div class="bg-gradient-to-r from-gray-900 to-gray-700 text-white p-8 rounded-2xl shadow-lg">
-                <h1 class="text-3xl font-bold mb-2">Welcome to ImHere-Black</h1>
-                <p class="opacity-80 mb-4">우리는 연결과 몰입을 위한 최고의 스케줄링 솔루션을 만듭니다.</p>
-                <button onclick="showTab('about')" class="bg-white text-black px-4 py-2 rounded-full text-sm font-bold">자세히 보기</button>
+    <main class="max-w-6xl mx-auto p-6">
+
+        <div id="home" class="tab-content active space-y-6">
+            <div class="glass-card rounded-3xl p-8 flex flex-col md:flex-row items-center justify-between gap-6 overflow-hidden relative">
+                <div class="relative z-10">
+                    <h2 class="text-3xl font-black mb-3">Innovation in Scheduling</h2>
+                    <p class="text-slate-400 max-w-md mb-6 leading-relaxed">
+                        ImHere-Black은 복잡한 스케줄 관리를 단순하게 해결합니다. <br>
+                        우리의 솔루션으로 업무 효율을 200% 더 높여보세요.
+                    </p>
+                    <button onclick="showTab('about')" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-full font-bold transition-all text-sm">
+                        회사 철학 보기
+                    </button>
+                </div>
+                <div class="opacity-20 md:opacity-100">
+                    <i data-lucide="shied" class="w-32 h-32 text-blue-500"></i>
+                </div>
             </div>
 
             <div class="grid md:grid-cols-2 gap-6">
-                <div class="bg-white p-6 rounded-xl border shadow-sm">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="font-bold flex items-center gap-2"><i data-lucide="bell" class="text-orange-500 w-5 h-5"></i> 최신 알림</h2>
-                        <span onclick="showTab('notice')" class="text-xs text-gray-400 cursor-pointer">더보기</span>
+                <div class="glass-card rounded-2xl p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="flex items-center gap-2 font-bold text-lg text-orange-400">
+                            <i data-lucide="zap" class="w-5 h-5"></i> 최신 소식
+                        </h3>
+                        <button onclick="showTab('notice')" class="text-xs text-slate-500 hover:text-white">전체보기</button>
                     </div>
-                    <ul class="space-y-3">
-                        <li class="text-sm border-b pb-2">🚀 새로운 업데이트 버전이 배포되었습니다.</li>
-                        <li class="text-sm border-b pb-2">📅 연말 정산 관련 스케줄 공지</li>
-                    </ul>
+                    <div class="space-y-4">
+                        <div class="flex gap-4 items-start border-b border-white/5 pb-4">
+                            <span class="bg-orange-500/10 text-orange-500 text-[10px] px-2 py-1 rounded uppercase font-bold">New</span>
+                            <p class="text-sm text-slate-300">서버 안정화 작업이 완료되었습니다.</p>
+                        </div>
+                        <div class="flex gap-4 items-start">
+                            <span class="bg-slate-700 text-slate-400 text-[10px] px-2 py-1 rounded uppercase font-bold">Event</span>
+                            <p class="text-sm text-slate-300">내달 진행될 파트너십 데이 사전 안내</p>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="bg-white p-6 rounded-xl border shadow-sm">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="font-bold flex items-center gap-2"><i data-lucide="calendar" class="text-blue-500 w-5 h-5"></i> 오늘 일정</h2>
-                        <span onclick="showTab('schedule')" class="text-xs text-gray-400 cursor-pointer">더보기</span>
+                <div class="glass-card rounded-2xl p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="flex items-center gap-2 font-bold text-lg text-green-400">
+                            <i data-lucide="clock" class="w-5 h-5"></i> 오늘의 스케줄
+                        </h3>
+                        <button onclick="showTab('schedule')" class="text-xs text-slate-500 hover:text-white">상세관리</button>
                     </div>
-                    <div class="space-y-3">
-                        <div class="flex items-center justify-between text-sm bg-blue-50 p-2 rounded">
-                            <span>오전 팀 스탠드업 회의</span>
-                            <span class="font-bold text-blue-600">10:00</span>
+                    <div class="space-y-4 text-sm">
+                        <div class="flex justify-between items-center p-3 bg-white/5 rounded-xl border border-white/5">
+                            <span>오전 기획팀 브리핑</span>
+                            <span class="font-bold text-green-400">10:00 AM</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-white/5 rounded-xl border border-white/5">
+                            <span>클라이언트 프로젝트 컨설팅</span>
+                            <span class="font-bold text-green-400">02:30 PM</span>
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
 
-        <section id="about" class="tab-content space-y-4">
-            <div class="bg-white p-8 rounded-xl border shadow-sm">
-                <h2 class="text-2xl font-black mb-6 border-b pb-2">Company Information</h2>
-                <div class="grid md:grid-cols-2 gap-8 items-center">
-                    <div>
-                        <p class="text-gray-600 leading-relaxed mb-4">
-                            <strong>ImHere-Black</strong>은 단순한 스케줄러를 넘어, 비즈니스의 흐름을 최적화하는 파트너입니다. 
-                            우리는 사용자가 언제 어디서든 자신의 업무 상태를 명확히 공유하고 관리할 수 있도록 돕습니다.
-                        </p>
-                        <ul class="space-y-2 text-sm text-gray-500">
-                            <li>• 실시간 데이터 동기화</li>
-                            <li>• 사용자 친화적 UI/UX</li>
-                            <li>• 보안 중심의 아키텍처</li>
-                        </ul>
-                    </div>
-                    <div class="bg-gray-100 h-48 rounded-lg flex items-center justify-center">
-                        <i data-lucide="building-2" class="w-16 h-16 text-gray-300"></i>
+        <div id="about" class="tab-content">
+            <div class="glass-card rounded-3xl p-10 max-w-4xl mx-auto">
+                <h2 class="text-4xl font-black mb-8 border-l-4 border-blue-500 pl-6">Company<br>Introduction</h2>
+                <div class="space-y-6 text-slate-300 text-lg leading-relaxed">
+                    <p>
+                        <span class="text-white font-bold">ImHere-Black</span>은 프리미엄 비즈니스 솔루션을 지향합니다. 
+                        우리는 단순한 도구를 만드는 것이 아니라, 사용자의 업무 스타일과 환경을 이해하는 똑똑한 동반자를 지향합니다.
+                    </p>
+                    <div class="grid sm:grid-cols-3 gap-4 pt-6">
+                        <div class="text-center p-4 bg-white/5 rounded-2xl">
+                            <i data-lucide="target" class="w-8 h-8 mx-auto mb-2 text-blue-400"></i>
+                            <p class="font-bold text-white">Precision</p>
+                            <p class="text-xs text-slate-500">정밀한 스케줄 설계</p>
+                        </div>
+                        <div class="text-center p-4 bg-white/5 rounded-2xl">
+                            <i data-lucide="shield-check" class="w-8 h-8 mx-auto mb-2 text-green-400"></i>
+                            <p class="font-bold text-white">Security</p>
+                            <p class="text-xs text-slate-500">철저한 데이터 보안</p>
+                        </div>
+                        <div class="text-center p-4 bg-white/5 rounded-2xl">
+                            <i data-lucide="zap" class="w-8 h-8 mx-auto mb-2 text-yellow-400"></i>
+                            <p class="font-bold text-white">Speed</p>
+                            <p class="text-xs text-slate-500">압도적인 처리 속도</p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
 
-        <section id="schedule" class="tab-content">
-            <div class="bg-white p-8 rounded-xl border shadow-sm">
-                <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
-                    <i data-lucide="calendar"></i> 콜스케줄 관리
+        <div id="schedule" class="tab-content">
+            <div class="glass-card rounded-2xl p-8">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <i data-lucide="calendar" class="text-green-400"></i> 콜스케줄 관리 화면
                 </h2>
-                <p class="text-gray-500">스케줄 관리 데이터가 여기에 표시됩니다.</p>
+                <div class="h-64 border-2 border-dashed border-white/10 rounded-2xl flex items-center justify-center text-slate-500 text-sm">
+                    캘린더 위젯이 로드되는 영역입니다.
+                </div>
             </div>
-        </section>
+        </div>
 
-        <section id="notice" class="tab-content">
-            <div class="bg-white p-8 rounded-xl border shadow-sm">
-                <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
-                    <i data-lucide="bell"></i> 전체 알림
+        <div id="notice" class="tab-content">
+            <div class="glass-card rounded-2xl p-8">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <i data-lucide="bell" class="text-orange-400"></i> 전체 공지사항
                 </h2>
                 <div class="space-y-4">
-                    <div class="p-4 border-l-4 border-orange-500 bg-orange-50 rounded">
-                        <p class="font-bold text-sm">시스템 점검 안내</p>
-                        <p class="text-xs text-gray-500">2025-12-24 02:00 ~ 04:00</p>
+                    <div class="p-5 glass-card rounded-xl hover:bg-white/10 transition-colors cursor-pointer">
+                        <p class="font-bold">2025년 하반기 서비스 안정화 패치 안내</p>
+                        <p class="text-xs text-slate-500 mt-2">2025.12.22</p>
+                    </div>
+                    <div class="p-5 glass-card rounded-xl hover:bg-white/10 transition-colors cursor-pointer">
+                        <p class="font-bold">신규 회원 가입 이벤트 당첨자 발표</p>
+                        <p class="text-xs text-slate-500 mt-2">2025.12.15</p>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
 
     </main>
 
+    <footer class="max-w-6xl mx-auto p-10 mt-10 border-t border-white/5 text-center text-slate-600 text-xs">
+        <p>© 2025 ImHere-Black Team. All rights reserved.</p>
+    </footer>
+
     <script>
-        // 탭 전환 로직
+        // 탭 전환 기능
         function showTab(tabId) {
-            // 모든 컨텐츠 숨기기
+            // 모든 탭 숨기기
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
             });
-            // 선택한 탭 보이기
-            document.getElementById(tabId).classList.add('active');
-            // 페이지 상단으로 이동
-            window.scrollTo(0, 0);
+            // 요청된 탭 보이기
+            const target = document.getElementById(tabId);
+            if(target) {
+                target.classList.add('active');
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
         }
 
-        // 아이콘 초기화
+        // 아이콘 실행
         lucide.createIcons();
     </script>
 </body>
