@@ -72,11 +72,7 @@
                 <button onclick="showTab('notice')" class="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-all">
                     <i data-lucide="bell-ring" class="w-4 h-4 text-amber-400"></i>
                     <span class="text-sm font-bold hidden sm:inline">알림</span>
-                <!-- </button>
-                <button onclick="showTab('login')" class="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-all border border-white/5">
-                    <i data-lucide="key" class="w-4 h-4 text-slate-400"></i>
-                    <span class="text-sm font-bold hidden sm:inline text-slate-400">관리자</span>
-                </button> -->
+                </button>
                 <button onclick="showTab('about')" class="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-all">
                     <!-- <i data-lucide="layout-dashboard" class="w-4 h-4 text-blue-400"></i> -->
                     <i data-lucide="building" class="w-4 h-4 text-blue-400"></i>
@@ -228,6 +224,11 @@
                 </div>
             </div>
         </div>
+
+        <div id="blogger-notice-container" class="space-y-4 pt-4">
+           <p class="text-center text-gray-600 text-sm py-10">최신 소식을 불러오는 중...</p>
+        </div>
+        
     </main>
 
     <footer class="p-8 text-center border-t border-white/5">
@@ -236,7 +237,7 @@
         <p class="text-gray-500 text-xs mt-2">© ImHere-Black Since 2025. All rights reserved.</p>
     </footer>
 
-    <script>
+    <!-- <script>
         function showTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             const target = document.getElementById(tabId);
@@ -246,6 +247,98 @@
             }
         }
         lucide.createIcons();
+    </script> -->
+
+    <script>
+        // 탭 전환 함수
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            const target = document.getElementById(tabId);
+            if(target) {
+                target.classList.add('active');
+                window.scrollTo({top: 0, behavior: 'smooth'});
+                
+                // 알림 탭 진입 시 데이터 로드
+                if(tabId === 'notice') fetchBloggerNotice();
+            }
+        }
+
+        // --- 구글 블로거 연동 설정 ---
+        const BLOG_NAME = 'heresearchmeio'; // 블로그 ID
+        const LABEL_NAME = 'Notice';        // 카테고리(라벨) 명
+
+        function fetchBloggerNotice() {
+            const feedUrl = `https://${BLOG_NAME}.blogspot.com/feeds/posts/default/-/${encodeURIComponent(LABEL_NAME)}?alt=json-in-script&callback=renderBloggerNotice`;
+            
+            const oldScript = document.getElementById('blogger-script');
+            if(oldScript) oldScript.remove();
+
+            const script = document.createElement('script');
+            script.id = 'blogger-script';
+            script.src = feedUrl;
+            document.body.appendChild(script);
+        }
+
+        // 데이터 렌더링 함수
+        function renderBloggerNotice(data) {
+            const container = document.getElementById('blogger-notice-container');
+            const homePreview = document.getElementById('home-notice-preview');
+            const entries = data.feed.entry;
+
+            if (!entries || entries.length === 0) {
+                const emptyMsg = `<p class="text-center text-gray-600 text-xs py-10">최신 공지사항이 없습니다.</p>`;
+                if(container) container.innerHTML = emptyMsg;
+                return;
+            }
+
+            let fullListHtml = "";
+            let previewHtml = "";
+
+            entries.forEach((entry, index) => {
+                const title = entry.title.$t;
+                const link = entry.link.find(l => l.rel === 'alternate').href;
+                const date = new Date(entry.published.$t).toLocaleDateString('ko-KR', {
+                    year: 'numeric', month: 'short', day: 'numeric'
+                });
+                
+                let summary = entry.summary ? entry.summary.$t : (entry.content ? entry.content.$t : "");
+                summary = summary.replace(/<[^>]*>?/gm, '').substring(0, 100);
+
+                // 전체 리스트 UI
+                fullListHtml += `
+                    <div onclick="window.open('${link}')" class="p-5 glass-card rounded-xl border-l-2 border-white/10 hover:border-emerald-500 transition-all cursor-pointer group">
+                        <div class="flex justify-between items-start mb-2">
+                            <h4 class="font-bold text-white group-hover:text-emerald-400 transition-colors">${title}</h4>
+                            <span class="text-[10px] text-gray-500">${date}</span>
+                        </div>
+                        <p class="text-xs text-gray-400 leading-relaxed line-clamp-2">${summary}...</p>
+                        <div class="mt-3 flex items-center gap-1 text-[10px] text-emerald-500 font-bold uppercase tracking-widest">
+                            상세보기 <i data-lucide="chevron-right" class="w-3 h-3"></i>
+                        </div>
+                    </div>
+                `;
+
+                // 홈 화면 미리보기 (최근 2개만)
+                if(index < 2) {
+                    previewHtml += `
+                        <div onclick="window.open('${link}')" class="flex justify-between items-center p-3 hover:bg-white/5 rounded-lg cursor-pointer transition-colors border-b border-white/5">
+                            <span class="text-sm text-gray-300 truncate pr-4">${title}</span>
+                            <span class="text-[10px] text-gray-600 shrink-0">${date}</span>
+                        </div>
+                    `;
+                }
+            });
+
+            if(container) container.innerHTML = fullListHtml;
+            if(homePreview) homePreview.innerHTML = previewHtml;
+            lucide.createIcons();
+        }
+
+        // 초기 실행
+        window.onload = () => {
+            lucide.createIcons();
+            fetchBloggerNotice(); // 홈 화면 미리보기를 위해 첫 로딩 시 호출
+        };
     </script>
 </body>
 </html>
