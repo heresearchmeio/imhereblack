@@ -52,7 +52,7 @@
 
     <nav class="sticky top-0 z-50 glass-card border-b border-white/10 px-4 py-3">
         <div class="max-w-6xl mx-auto flex justify-between items-center">
-            <div onclick="showTab('about')" class="flex items-center gap-3 cursor-pointer group">
+            <div onclick="showTab('home')" class="flex items-center gap-3 cursor-pointer group">
                 <div class="logo-container">
                     <img src="imhereblack.jpg" alt="Logo" class="logo-img" onerror="this.src='https://via.placeholder.com/34/333/fff?text=IM'">
                 </div>
@@ -60,11 +60,7 @@
             </div>
             
             <div class="flex items-center gap-1 md:gap-2">
-                <button onclick="showTab('home')" class="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-all">
-                    <i data-lucide="layout-dashboard" class="w-4 h-4 text-blue-400"></i>
-                    <i data-lucide="building" class="w-4 h-4 text-blue-400"></i>
-                    <span class="text-sm font-bold hidden sm:inline">홈</span>
-                </button>
+                
                 <button onclick="showTab('schedule')" class="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-all">
                     <i data-lucide="truck" class="w-4 h-4 text-emerald-400"></i>
                     <span class="text-sm font-bold hidden sm:inline">배차현황</span>
@@ -80,6 +76,11 @@
                 <button onclick="showTab('login')" class="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-all border border-white/5">
                     <i data-lucide="key" class="w-4 h-4 text-slate-400"></i>
                     <span class="text-sm font-bold hidden sm:inline text-slate-400">관리자</span>
+                </button>
+                <button onclick="showTab('about')" class="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-all">
+                    <!-- <i data-lucide="layout-dashboard" class="w-4 h-4 text-blue-400"></i> -->
+                    <i data-lucide="building" class="w-4 h-4 text-blue-400"></i>
+                    <span class="text-sm font-bold hidden sm:inline">회사소개</span>
                 </button>
             </div>
         </div>
