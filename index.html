@@ -268,7 +268,7 @@
         const LABEL_NAME = 'imhere';        // 카테고리(라벨) 명
 
         function fetchBloggerNotice() {
-            const maxPosts = 5;
+            const maxPosts = 3;
             const feedUrl = `https://${BLOG_NAME}.blogspot.com/feeds/posts/default/-/${encodeURIComponent(LABEL_NAME)}?alt=json-in-script&callback=renderBloggerNotice&max-results=${maxPosts}`;
             
             const oldScript = document.getElementById('blogger-script');
