@@ -1,37 +1,47 @@
 window.addEventListener('load', async () => {
     const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyufrWlyL2dWbmJMDIS8f1y8HilPwTN3maiEU9nj8dqaXkHmcjqyT6mjUZZZY_gjTiYOA/exec";
 
-// 1. 주소창(URL)에서 date와 title 파라미터 추출
-    const urlParams = new URLSearchParams(window.location.search);
-    const eventDate = urlParams.get('date');   // 2025-12-26
-    const eventTitle = urlParams.get('title'); // [배차] 서울-부산
+   const urlParams = new URLSearchParams(window.location.search);
     
-    // 2. 내 브라우저(localStorage)에 저장된 기사님 이메일 꺼내기
+    // 1. 값 추출 및 Trim(공백 제거) 처리로 undefined/null 방지
+    const rawDate = urlParams.get('date');
+    const rawTitle = urlParams.get('title');
+    
+    const eventDate = rawDate ? rawDate.trim() : null;
+    const eventTitle = rawTitle ? rawTitle.trim() : null;
     const savedEmail = localStorage.getItem('imhere_user_email');
     const statusEl = document.getElementById('status');
 
-    // 3. 필수 정보가 없는 경우 차단
-    if (!eventDate || !eventTitle) {
-        alert("잘못된 접근입니다. 배차 정보(날짜/제목)가 누락되었습니다.");
+    // 디버깅: 값이 제대로 들어왔는지 콘솔에서 확인 가능
+    console.log("파라미터 체크:", { eventDate, eventTitle, savedEmail });
+
+    // 2. 필수 정보 검증 로직 강화
+    if (!eventDate || !eventTitle || eventDate === "undefined" || eventTitle === "undefined") {
+        alert("배차 정보가 올바르지 않거나 누락되었습니다.\n(날짜: " + eventDate + ", 제목: " + eventTitle + ")");
         window.close();
         return;
     }
 
     if (!savedEmail) {
-        alert("이메일 인증이 필요합니다. 메인 페이지에서 로그인을 먼저 해주세요.");
+        alert("이메일 인증 정보가 없습니다. 로그인 후 다시 시도해주세요.");
         window.close();
         return;
     }
 
-    // 4. 기사님에게 최종 확인 후 서버로 데이터 전송
-    if (confirm(`일시: ${eventDate}\n일정: ${eventTitle}\n\n이 배차를 신청하시겠습니까?`)) {
+    // 3. 신청 확인 창
+    if (confirm(`📅 일시: ${eventDate}\n📋 일정: ${eventTitle}\n\n위 배차를 신청하시겠습니까?`)) {
         try {
-            if(statusEl) statusEl.innerText = "서버에 배정 신청 요청 중...";
+            if(statusEl) statusEl.innerText = "서버에 배정 신청을 보내는 중입니다...";
             
-            // 💡 날짜, 제목, 이메일을 쿼리 스트링으로 조합
-            const finalUrl = `${GAS_WEB_APP_URL}?date=${eventDate}&title=${encodeURIComponent(eventTitle)}&email=${encodeURIComponent(savedEmail)}`;
-            
-            console.log("요청 URL:", finalUrl); // 디버깅용
+            // 4. URL 조립 시 모든 파라미터를 encodeURIComponent로 감싸서 특수문자 오류 방지
+            const queryParams = new URLSearchParams({
+                date: eventDate,
+                title: eventTitle,
+                email: savedEmail
+            }).toString();
+
+            const finalUrl = `${GAS_WEB_APP_URL}?${queryParams}`;
+            console.log("최종 요청 URL:", finalUrl);
 
             const response = await fetch(finalUrl, {
                 method: "GET",
@@ -39,22 +49,26 @@ window.addEventListener('load', async () => {
                 redirect: "follow"
             });
 
+            // 5. 서버 응답 처리 (에러 핸들링 보완)
+            if (!response.ok) throw new Error("네트워크 응답이 좋지 않습니다.");
+            
             const result = await response.json();
+            console.log("서버 응답 결과:", result);
 
-            // 5. 서버 응답 결과 알림
-            alert(result.message);
-
-            // 성공했다면 부모 창(메인 화면)을 새로고침하고 창 닫기
             if (result.success) {
+                alert(result.message || "신청이 완료되었습니다.");
                 if (window.opener && !window.opener.closed) {
                     window.opener.location.reload(); 
                 }
+            } else {
+                // 서버에서 success: false를 보낸 경우 (이미 마감 등)
+                alert("신청 실패: " + (result.message || "알 수 없는 오류"));
             }
             window.close();
 
         } catch (e) {
-            console.error("통신 에러:", e);
-            alert("신청 중 오류가 발생했습니다: " + e.message);
+            console.error("통신 에러 상세:", e);
+            alert("서버 통신 중 오류가 발생했습니다.\n관리자에게 문의하세요. (오류내용: " + e.message + ")");
             window.close();
         }
     } else {
