@@ -360,8 +360,8 @@
 
         // 회원 인증 및 캘린더 노출 로직
         //배포주소
-        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzo8ZEAHGmjZy_hQsqHRP-wn6_ea7K1JsHrRPK39iYU28UUPc-nkdQfMlWAKokGV66CPA/exec";
-        function verifyMember() {
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwHwuPH3xSg6TJi1nhttsE_D0HwHNpruVchEtQtad2TDsBoqtEaOf-Jguxgxdu2F-Q0LA/exec";
+        async function verifyMember() {
             const email = document.getElementById('userEmail').value;
             const calIframe = document.getElementById('google-cal-iframe');
             const authSection = document.getElementById('calendar-auth-section');
@@ -372,20 +372,22 @@
                 return;
             }
 
-            // 외부 사이트(GitHub 등)에서는 fetch를 사용하여 GAS와 통신해야 합니다.
-            fetch(`${GAS_WEB_APP_URL}?action=checkAuth&email=${encodeURIComponent(email)}`, {
-                method: 'GET',
-                mode: 'cors', // CORS 정책 허용
-                redirect: 'follow' // 구글 스크립트 리다이렉션을 따라가기 (매우 중요)
-            })
-            .then(response => {
-                // 200 OK 응답이 왔지만, 실제 데이터가 아닌 에러 페이지일 경우를 대비
+            try {
+                const url = `${GAS_WEB_APP_URL}?action=checkAuth&email=${encodeURIComponent(email)}`;
+                
+                // fetch 옵션을 최소화하여 브라우저의 기본 리다이렉트 처리를 유도합니다.
+                const response = await fetch(url, {
+                    method: "GET",
+                    mode: "cors", // No-cors를 쓰면 응답 데이터를 읽을 수 없으므로 반드시 cors 유지
+                    redirect: "follow"
+                });
+
                 if (!response.ok) throw new Error('네트워크 응답 에러');
-                return response.json();
-            })
-            .then(auth => {
+
+                const auth = await response.json();
+                console.log("인증 성공:", auth);
+
                 if (auth.isMember) {
-                    // 회원용 캘린더 URL 설정
                     const calId = 'heresearchmeio@gmail.com';
                     const calUrl = `https://calendar.google.com/calendar/embed?src=${encodeURIComponent(calId)}&ctz=Asia%2FSeoul`;
                     
@@ -393,15 +395,14 @@
                     authSection.classList.add('hidden');
                     calDisplay.classList.remove('hidden');
                     
-                    alert(auth.isAdmin ? "관리자 권한으로 로그인되었습니다." : "회원님 환영합니다.");
+                    alert(auth.isAdmin ? "관리자 권한으로 인증되었습니다." : "회원 인증 성공!");
                 } else {
-                    alert("등록된 기사(회원)가 아닙니다. 기사등록을 먼저 해주세요.");
+                    alert("등록된 회원이 아닙니다.");
                 }
-            })
-            .catch(error => {
+            } catch (error) {
                 console.error("인증 실패 상세:", error);
-                alert("인증 서버와 통신할 수 없습니다.\n1. GAS 배포 설정(모든 사용자) 확인\n2. 주소 끝이 /exec 인지 확인");
-            });
+                alert("인증 서버 통신 실패. GAS 배포 권한이 '모든 사용자(Anyone)'인지 다시 확인하세요.");
+            }
         }
 
     </script>
