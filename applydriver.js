@@ -6,21 +6,6 @@ window.addEventListener('load', async () => {
     const eventTitle = urlParams.get('title');
     const savedEmail = localStorage.getItem('imhere_user_email');
 
-
-    if (!savedEmail || savedEmail === "undefined") {
-        // 💡 해결책: 이메일이 없으면 사용자에게 직접 물어봅니다 (임시 방편)
-        const backupEmail = prompt("로그인 정보가 유실되었습니다. 인증받은 이메일을 입력해주세요.");
-        if (backupEmail) {
-            localStorage.setItem('imhere_user_email', backupEmail);
-            location.reload(); // 이메일 저장 후 새로고침
-            return;
-        } else {
-            alert("이메일 정보 없이는 신청이 불가능합니다.");
-            window.close();
-            return;
-        }
-    }
-
     if (!eventDate || !eventTitle || !savedEmail) {
         alert("필수 정보가 누락되었습니다. 다시 시도해주세요.");
         return;
@@ -37,6 +22,8 @@ window.addEventListener('load', async () => {
             const finalUrl = `${GAS_WEB_APP_URL}?${params.toString()}`;
             console.log("보내는 최종 URL:", finalUrl);
 
+            console.log(finalUrl);
+            
             // 💡 GET 요청은 body 없이 URL 뒤에 파라미터를 붙여 보냅니다.
             const response = await fetch(finalUrl, {
                 method: "GET",
