@@ -1,3 +1,6 @@
+//배포주소
+const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyufrWlyL2dWbmJMDIS8f1y8HilPwTN3maiEU9nj8dqaXkHmcjqyT6mjUZZZY_gjTiYOA/exec";
+
 // script.js 에 추가하거나 applydriver.html 하단에 넣으세요.
 window.addEventListener('load', async () => {
     const urlParams = new URLSearchParams(window.location.search);
