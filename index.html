@@ -429,42 +429,6 @@
             }
         }
 
-        window.addEventListener('load', async () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const applyId = urlParams.get('apply');
-            const savedEmail = localStorage.getItem('imhere_user_email');
-
-            if (applyId) {
-                // [중요] 페이지가 새로 열리는 느낌을 없애기 위해 주소창에서 파라미터를 즉시 지웁니다.
-                const cleanUrl = window.location.origin + window.location.pathname;
-                window.history.replaceState({}, document.title, cleanUrl);
-
-                if (!savedEmail) {
-                    alert("로그인이 필요합니다. 이메일 인증 후 다시 클릭해 주세요.");
-                    return;
-                }
-
-                // 현재 창에서 바로 팝업 실행
-                await showApplyModal(applyId, savedEmail);
-            }
-        });
-
-        async function showApplyModal(eventId, email) {
-            // 브라우저 기본 confirm 팝업 (현재 탭 중앙에 뜸)
-            if (confirm("이 배차 일정을 신청하시겠습니까?")) {
-                try {
-                    const response = await fetch(`${GAS_WEB_APP_URL}?apply=${eventId}&email=${email}`);
-                    const result = await response.json();
-                    
-                    alert(result.message);
-                    if (result.success) {
-                       this.window.close();
-                    }
-                } catch (e) {
-                    alert("신청 중 오류가 발생했습니다.");
-                }
-            }
-        }
     </script>
 </body>
 </html>
