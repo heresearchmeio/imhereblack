@@ -46,12 +46,10 @@ window.addEventListener('load', async () => {
                 alert("처리 결과를 확인했지만 메시지가 비어있습니다.");
             }
 
-            if (result && result.success) {
-                if (window.opener && !window.opener.closed) {
+            if (window.opener && !window.opener.closed) {
                     window.opener.location.reload(); 
-                }
-                window.close();
             }
+            window.close();
 
         } catch (e) {
             console.error("상세 에러:", e);
