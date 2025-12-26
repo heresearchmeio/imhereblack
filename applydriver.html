@@ -1,16 +1,33 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>배차 신청 처리 중...</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ImHere-Black | 배차 신청 처리</title>
     <style>
-        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: #111; color: white; }
+        body { 
+            font-family: 'Pretendard', sans-serif; 
+            display: flex; flex-direction: column; justify-content: center; align-items: center; 
+            height: 100vh; margin: 0; background: #0a0a0a; color: white; 
+        }
+        .loader {
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid #10b981; /* 에메랄드 색상 */
+            border-radius: 50%;
+            width: 40px; height: 40px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        #status { font-size: 1.1rem; font-weight: 600; text-align: center; line-height: 1.6; }
+        .sub-text { font-size: 0.85rem; color: #666; margin-top: 10px; }
     </style>
 </head>
 <body>
-    <div id="status">배차 신청을 처리하고 있습니다...</div>
+    <div class="loader" id="loader"></div>
+    <div id="status">배차 신청 정보를 확인하고 있습니다...</div>
+    <div class="sub-text">이 창은 처리가 완료되면 자동으로 닫힙니다.</div>
 
     <script src="applydriver.js"></script>
 </body>
 </html>
-
