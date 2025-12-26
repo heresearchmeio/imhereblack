@@ -6,66 +6,43 @@ window.addEventListener('load', async () => {
     const eventTitle = urlParams.get('title');
     const savedEmail = localStorage.getItem('imhere_user_email');
 
-    // 디버깅: 값이 제대로 들어왔는지 콘솔에서 확인 가능
-    console.log("파라미터 체크:", { eventDate, eventTitle, savedEmail });
-
-    // 2. 필수 정보 검증 로직 강화
-    if (!eventDate || !eventTitle || eventDate === "undefined" || eventTitle === "undefined") {
-        alert("배차 정보가 올바르지 않거나 누락되었습니다.\n(날짜: " + eventDate + ", 제목: " + eventTitle + ")");
-        window.close();
+    if (!eventDate || !eventTitle || !savedEmail) {
+        alert("필수 정보가 누락되었습니다. 다시 시도해주세요.");
         return;
     }
 
-    if (!savedEmail) {
-        alert("이메일 인증 정보가 없습니다. 로그인 후 다시 시도해주세요.");
-        window.close();
-        return;
-    }
-
-    // 3. 신청 확인 창
-    if (confirm(`📅 일시: ${eventDate}\n📋 일정: ${eventTitle}\n\n위 배차를 신청하시겠습니까?`)) {
+    if (confirm(`[${eventTitle}] 신청하시겠습니까?`)) {
         try {
-            if(statusEl) statusEl.innerText = "서버에 배정 신청을 보내는 중입니다...";
-            
-            // 4. URL 조립 시 모든 파라미터를 encodeURIComponent로 감싸서 특수문자 오류 방지
-            const queryParams = new URLSearchParams({
-                date: eventDate,
-                title: eventTitle,
-                email: savedEmail
-            }).toString();
+            // 💡 보내는 쪽 핵심 보완: URL 조립 방식 변경
+            const params = new URLSearchParams();
+            params.append('date', eventDate);
+            params.append('title', eventTitle);
+            params.append('email', savedEmail);
 
-            const finalUrl = `${GAS_WEB_APP_URL}?${queryParams}`;
-            console.log("최종 요청 URL:", finalUrl);
+            const finalUrl = `${GAS_WEB_APP_URL}?${params.toString()}`;
+            console.log("보내는 최종 URL:", finalUrl);
 
+            // 💡 GET 요청은 body 없이 URL 뒤에 파라미터를 붙여 보냅니다.
             const response = await fetch(finalUrl, {
                 method: "GET",
-                mode: "cors",
-                redirect: "follow"
+                mode: "cors" // CORS 정책 허용
             });
 
-            // 5. 서버 응답 처리 (에러 핸들링 보완)
-            if (!response.ok) throw new Error("네트워크 응답이 좋지 않습니다.");
-            
-            const result = await response.json();
-            console.log("서버 응답 결과:", result);
+            // 구글 스크립트는 보안상 리다이렉트가 발생하므로 텍스트로 먼저 받아봅니다.
+            const text = await response.text();
+            console.log("서버 원본 응답:", text);
 
-            if (result.success) {
-                alert(result.message || "신청이 완료되었습니다.");
-                if (window.opener && !window.opener.closed) {
-                    window.opener.location.reload(); 
-                }
-            } else {
-                // 서버에서 success: false를 보낸 경우 (이미 마감 등)
-                alert("신청 실패: " + (result.message || "알 수 없는 오류"));
+            const result = JSON.parse(text);
+            alert(result.message);
+
+            if (result.success && window.opener) {
+                window.opener.location.reload();
             }
             window.close();
 
         } catch (e) {
-            console.error("통신 에러 상세:", e);
-            alert("서버 통신 중 오류가 발생했습니다.\n관리자에게 문의하세요. (오류내용: " + e.message + ")");
-            window.close();
+            console.error("통신 에러:", e);
+            alert("서버와 통신할 수 없습니다. 배포 설정을 확인하세요.");
         }
-    } else {
-        window.close();
     }
 });
