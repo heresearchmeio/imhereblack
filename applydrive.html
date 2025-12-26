@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>배차 신청 처리 중...</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: #111; color: white; }
+    </style>
+</head>
+<body>
+    <div id="status">배차 신청을 처리하고 있습니다...</div>
+
+    <script>
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyufrWlyL2dWbmJMDIS8f1y8HilPwTN3maiEU9nj8dqaXkHmcjqyT6mjUZZZY_gjTiYOA/exec";
+
+        window.onload = async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const applyId = urlParams.get('apply');
+            const savedEmail = localStorage.getItem('imhere_user_email');
+
+            if (!applyId) {
+                alert("잘못된 접근입니다. 배차 ID가 없습니다.");
+                window.close();
+                return;
+            }
+
+            if (!savedEmail) {
+                alert("인증 정보가 없습니다. 메인 페이지에서 먼저 이메일 인증을 해주세요.");
+                window.close();
+                return;
+            }
+
+            try {
+                // GAS 서버로 신청 보냄
+                const response = await fetch(`${GAS_WEB_APP_URL}?action=applyAssignment&apply=${applyId}&email=${savedEmail}`);
+                const result = await response.json();
+
+                alert(result.message);
+                
+                // 메인 페이지(부모 창)가 열려있다면 새로고침해서 마감 반영
+                if (window.opener) {
+                    window.opener.location.reload();
+                }
+                
+                // 처리 완료 후 창 닫기
+                window.close();
+            } catch (e) {
+                alert("신청 중 오류가 발생했습니다.");
+                window.close();
+            }
+        };
+    </script>
+</body>
+</html>
