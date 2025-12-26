@@ -200,19 +200,31 @@
         <div id="schedule" class="tab-content">
             <div class="glass-card rounded-2xl p-8">
                 <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
-                    <i data-lucide="list"></i> 배차 현황
+                    <i data-lucide="calendar"></i> 배차 일정 및 신청
                 </h2>
-                <div class="space-y-4">
-                    <div class="p-4 glass-card rounded-xl flex justify-between items-center border-l-4 border-gray-500">
-                        <div>
-                            <p class="font-bold">대구 → 서울 (승용)</p>
-                            <p class="text-xs text-gray-500">배차 완료</p>
-                        </div>
-                        <span class="text-sm font-bold">2025-12-24 13:00</span>
+                
+                <div id="calendar-auth-section" class="mb-6">
+                    <p class="text-sm text-gray-400 mb-4">일정을 확인하고 신청하려면 회원 이메일(구글 gmail) 인증이 필요합니다.</p>
+                    <input type="email" id="userEmail" placeholder="이메일 입력" class="input-field p-2 rounded-lg w-full max-w-xs text-sm">
+                    <button onclick="verifyMember()" class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-bold">인증하기</button>
+                </div>
+
+                <div id="calendar-display" class="hidden">
+                    <div class="aspect-video w-full">
+                        <iframe id="google-cal-iframe" src="" style="border: 0" width="100%" height="600" frameborder="0" scrolling="no"></iframe>
                     </div>
+                    
+                    <div class="mt-6 p-4 bg-white/5 rounded-xl border border-white/10">
+                        <h3 class="text-sm font-bold text-emerald-400 mb-2">배정 신청 안내</h3>
+                        <p class="text-xs text-gray-400">원하시는 일정을 클릭하여 상세 내용을 확인한 후, 신청하기 버튼을 눌러주세요.</p>
+                        </div>
                 </div>
             </div>
         </div>
+
+<script>
+
+</script>
 
         <div id="notice" class="tab-content">
             <div class="glass-card rounded-2xl p-8">
@@ -345,6 +357,30 @@
             lucide.createIcons();
             fetchBloggerNotice(); // 홈 화면 미리보기를 위해 첫 로딩 시 호출
         };
+
+        // 회원 인증 및 캘린더 노출 로직
+        function verifyMember() {
+            const email = document.getElementById('userEmail').value;
+            const calIframe = document.getElementById('google-cal-iframe');
+            const authSection = document.getElementById('calendar-auth-section');
+            const calDisplay = document.getElementById('calendar-display');
+
+            // 실제로는 Apps Script 웹 앱을 호출하여 시트 내 이메일 존재 여부를 확인합니다.
+            // 여기서는 구조적 방법만 안내합니다.
+            google.script.run.withSuccessHandler(function(auth) {
+                if(auth.isMember) {
+                    // 회원용 캘린더 URL (src에 캘린더 ID 포함)
+                    const calUrl = `https://calendar.google.com/calendar/embed?src=${encodeURIComponent('heresearchmeio@gmail.com')}&ctz=Asia%2FSeoul`;
+                    calIframe.src = calUrl;
+                    authSection.classList.add('hidden');
+                    calDisplay.classList.remove('hidden');
+                    alert(auth.isAdmin ? "관리자 권한으로 로그인되었습니다." : "회원님 환영합니다.");
+                } else {
+                    alert("등록된 기사(회원)가 아닙니다. 기사등록을 먼저 해주세요.");
+                }
+            }).checkAuth(email);
+        }
+
     </script>
 </body>
 </html>
