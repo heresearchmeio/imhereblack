@@ -28,8 +28,7 @@ window.addEventListener('load', async () => {
             const response = await fetch(finalUrl, {
                 method: "GET",
                 mode: "cors",
-                redirect: "follow", // 구글의 302 리다이렉트를 끝까지 추적
-                cache: "no-cache"
+                redirect: "follow" // 구글의 302 리다이렉트를 끝까지 추적
             });
             // 응답이 왔는지 확인
             if (!response.ok) {
