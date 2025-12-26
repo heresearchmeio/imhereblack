@@ -427,36 +427,6 @@
             location.reload(); // 새로고침하여 초기 화면으로 이동
         }
     }
-
-    window.addEventListener('load', () => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const applyEventId = urlParams.get('apply');
-        const savedEmail = localStorage.getItem('imhere_user_email');
-
-        // 만약 주소에 apply 파라미터가 있고, 로그인이 되어 있다면 자동 신청
-        if (applyEventId && savedEmail) {
-            processDirectApply(applyEventId, savedEmail);
-        }
-        
-        checkAutoLogin(); // 기존 자동 로그인 실행
-    });
-
-    async function processDirectApply(eventId, email) {
-        if(!confirm("이 배차 일정을 신청하시겠습니까?")) return;
-
-        try {
-            const url = `${GAS_WEB_APP_URL}?action=applyAssignment&email=${encodeURIComponent(email)}&eventId=${encodeURIComponent(eventId)}`;
-            const response = await fetch(url);
-            const result = await response.json();
-            
-            alert(result.message);
-            // 신청 후에는 깔끔하게 주소창에서 파라미터 제거
-            window.history.replaceState({}, document.title, window.location.pathname);
-            location.reload(); 
-        } catch (e) {
-            alert("신청 처리 중 오류가 발생했습니다.");
-        }
-    }
     </script>
 </body>
 </html>
