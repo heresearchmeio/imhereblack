@@ -218,7 +218,16 @@
                     <div class="aspect-video w-full">
                         <iframe id="google-cal-iframe" src="" style="border: 0" width="100%" height="600" frameborder="0" scrolling="no"></iframe>
                     </div>
-                    
+                    <div class="p-4 bg-emerald-500/10 rounded-xl border border-emerald-500/20">
+                        <h3 class="text-sm font-bold text-white mb-2">실시간 배차 신청</h3>
+                        <div class="flex gap-2">
+                            <input type="text" id="applyEventId" placeholder="일정 클릭 후 나오는 주소의 ID 입력" class="input-field p-2 rounded-lg flex-grow text-xs">
+                            <button onclick="applyForJob()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-lg text-xs font-bold transition-all">
+                                신청하기
+                            </button>
+                        </div>
+                        <p class="text-[10px] text-gray-500 mt-2">* 캘린더에서 일정을 클릭하여 상세 내용을 확인하세요. 선착순 1명만 배정됩니다.</p>
+                    </div>
                     <div class="mt-6 p-4 bg-white/5 rounded-xl border border-white/10">
                         <h3 class="text-sm font-bold text-emerald-400 mb-2">배정 신청 안내</h3>
                         <p class="text-xs text-gray-400">원하시는 일정을 클릭하여 상세 내용을 확인한 후, 신청하기 버튼을 눌러주세요.</p>
