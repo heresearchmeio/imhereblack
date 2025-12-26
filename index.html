@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ImHere-Black | 프리미엄 기사 파트너</title>
+    <base target="_self"> 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
@@ -434,39 +435,33 @@
             const savedEmail = localStorage.getItem('imhere_user_email');
 
             if (applyId) {
-                    // 주소창에서 파라미터는 즉시 제거 (새로고침 시 팝업 반복 방지)
-                    window.history.replaceState({}, document.title, window.location.pathname);
+                // [중요] 페이지가 새로 열리는 느낌을 없애기 위해 주소창에서 파라미터를 즉시 지웁니다.
+                const cleanUrl = window.location.origin + window.location.pathname;
+                window.history.replaceState({}, document.title, cleanUrl);
 
-                    if (!savedEmail) {
-                        alert("로그인이 필요합니다. 이메일 인증을 먼저 완료해 주세요.");
-                        return;
-                    }
-
-                    // [핵심] 브라우저 기본 alert 대신 커스텀 팝업을 띄울 수 있습니다.
-                    // 여기서는 가장 직관적인 확인 팝업을 사용합니다.
-                    showApplyModal(applyId, savedEmail);
+                if (!savedEmail) {
+                    alert("로그인이 필요합니다. 이메일 인증 후 다시 클릭해 주세요.");
+                    return;
                 }
-                
-                checkAutoLogin(); 
+
+                // 현재 창에서 바로 팝업 실행
+                await showApplyModal(applyId, savedEmail);
+            }
         });
 
-        // 신청 확인 팝업 함수
         async function showApplyModal(eventId, email) {
-            if (confirm("이 배차 일정을 신청하시겠습니까?\n확인 시 즉시 배차 마감됩니다.")) {
+            // 브라우저 기본 confirm 팝업 (현재 탭 중앙에 뜸)
+            if (confirm("이 배차 일정을 신청하시겠습니까?")) {
                 try {
-                    // 로딩 표시 (선택사항)
-                    const response = await fetch(`${GAS_WEB_APP_URL}?action=applyAssignment&apply=${eventId}&email=${email}`);
+                    const response = await fetch(`${GAS_WEB_APP_URL}?apply=${eventId}&email=${email}`);
                     const result = await response.json();
                     
-                    // 결과 알림
                     alert(result.message);
-                    
-                    // 성공 시 캘린더 새로고침 (마감 반영)
                     if (result.success) {
-                        location.reload();
+                        location.reload(); // 성공 시 현재 창 갱신
                     }
                 } catch (e) {
-                    alert("신청 처리 중 오류가 발생했습니다.");
+                    alert("신청 중 오류가 발생했습니다.");
                 }
             }
         }
