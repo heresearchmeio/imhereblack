@@ -359,26 +359,41 @@
         };
 
         // 회원 인증 및 캘린더 노출 로직
+        //배포주소
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzo8ZEAHGmjZy_hQsqHRP-wn6_ea7K1JsHrRPK39iYU28UUPc-nkdQfMlWAKokGV66CPA/exec";
         function verifyMember() {
             const email = document.getElementById('userEmail').value;
             const calIframe = document.getElementById('google-cal-iframe');
             const authSection = document.getElementById('calendar-auth-section');
             const calDisplay = document.getElementById('calendar-display');
 
-            // 실제로는 Apps Script 웹 앱을 호출하여 시트 내 이메일 존재 여부를 확인합니다.
-            // 여기서는 구조적 방법만 안내합니다.
-            google.script.run.withSuccessHandler(function(auth) {
-                if(auth.isMember) {
-                    // 회원용 캘린더 URL (src에 캘린더 ID 포함)
-                    const calUrl = `https://calendar.google.com/calendar/embed?src=${encodeURIComponent('heresearchmeio@gmail.com')}&ctz=Asia%2FSeoul`;
-                    calIframe.src = calUrl;
-                    authSection.classList.add('hidden');
-                    calDisplay.classList.remove('hidden');
-                    alert(auth.isAdmin ? "관리자 권한으로 로그인되었습니다." : "회원님 환영합니다.");
-                } else {
-                    alert("등록된 기사(회원)가 아닙니다. 기사등록을 먼저 해주세요.");
-                }
-            }).checkAuth(email);
+            if (!email) {
+                alert("이메일을 입력해주세요.");
+                return;
+            }
+
+            // 외부 사이트(GitHub 등)에서는 fetch를 사용하여 GAS와 통신해야 합니다.
+            fetch(`${GAS_WEB_APP_URL}?action=checkAuth&email=${email}`)
+                .then(response => response.json())
+                .then(auth => {
+                    if (auth.isMember) {
+                        // 회원용 캘린더 URL 설정 (반드시 /embed 주소를 사용해야 함)
+                        const calId = 'heresearchmeio@gmail.com';
+                        const calUrl = `https://calendar.google.com/calendar/embed?src=${encodeURIComponent(calId)}&ctz=Asia%2FSeoul`;
+                        
+                        calIframe.src = calUrl;
+                        authSection.classList.add('hidden');
+                        calDisplay.classList.remove('hidden');
+                        
+                        alert(auth.isAdmin ? "관리자 권한으로 로그인되었습니다." : "회원님 환영합니다.");
+                    } else {
+                        alert("등록된 기사(회원)가 아닙니다. 기사등록을 먼저 해주세요.");
+                    }
+                })
+                .catch(error => {
+                    console.error("인증 실패:", error);
+                    alert("인증 서버와 통신할 수 없습니다. GAS 배포 설정을 확인하세요.");
+                });
         }
 
     </script>
