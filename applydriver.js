@@ -26,45 +26,39 @@ window.addEventListener('load', async () => {
     // [보완] 버튼 중복 클릭 방지를 위해 즉시 실행 확인
     if (confirm("해당 배차 일정을 신청하시겠습니까?")) {
         try {
-            if(statusEl) statusEl.innerText = "서버에 배정 신청을 처리 중입니다. 잠시만 기다려주세요...";
+            if(statusEl) statusEl.innerText = "서버에 신청 요청 중입니다...";
             
-            // [보완] fetch 옵션에 redirect: "follow"를 명시하여 GAS의 리다이렉트 응답을 정상 수신함
             const url = `${GAS_WEB_APP_URL}?apply=${encodeURIComponent(applyId)}&email=${encodeURIComponent(savedEmail)}`;
             
             const response = await fetch(url, {
                 method: "GET",
                 mode: "cors",
-                redirect: "follow" 
+                redirect: "follow"
             });
 
-            const text = await response.text(); // 일단 텍스트로 받아서 내용을 확인
-            console.log("서버 응답 원본:", text); // 개발자 도구(F12) 콘솔에서 확인 가능
-            try {
-                const result = JSON.parse(text);
-                alert(result.message || "결과 메시지가 없습니다."); 
-            } catch (e) {
-                alert("서버 응답을 해석할 수 없습니다: " + text);
-            }
-
-            if (!response.ok) throw new Error('네트워크 응답 에러');
-
+            // 중요: response.json()은 딱 한 번만 호출해야 합니다.
             const result = await response.json();
-            alert(result.message);
+            console.log("서버 응답 결과:", result);
 
-            // 3. 부모 창(메인화면) 새로고침 및 창 닫기
-            if (window.opener && !window.opener.closed) {
-                try {
-                    window.opener.location.reload(); 
-                } catch(e) { console.log("부모창 새로고침 실패"); }
+            if (result && result.message) {
+                alert(result.message);
+            } else {
+                alert("처리 결과를 확인했지만 메시지가 비어있습니다.");
             }
-            window.close();
+
+            if (result && result.success) {
+                if (window.opener && !window.opener.closed) {
+                    window.opener.location.reload(); 
+                }
+                window.close();
+            }
 
         } catch (e) {
-            console.error("Error details:", e);
+            console.error("상세 에러:", e);
             alert("신청 중 오류가 발생했습니다: " + e.message);
-            window.close();
         }
-    } else {
+    }
+    else {
         window.close();
     }
 });
