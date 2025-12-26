@@ -23,12 +23,18 @@ window.addEventListener('load', async () => {
             console.log("보내는 최종 URL:", finalUrl);
 
             console.log(finalUrl);
-            
+
             // 💡 GET 요청은 body 없이 URL 뒤에 파라미터를 붙여 보냅니다.
             const response = await fetch(finalUrl, {
                 method: "GET",
-                mode: "cors" // CORS 정책 허용
+                mode: "cors",
+                redirect: "follow", // 구글의 302 리다이렉트를 끝까지 추적
+                cache: "no-cache"
             });
+            // 응답이 왔는지 확인
+            if (!response.ok) {
+                throw new Error(`HTTP 에러! 상태코드: ${response.status}`);
+            }
 
             // 구글 스크립트는 보안상 리다이렉트가 발생하므로 텍스트로 먼저 받아봅니다.
             const text = await response.text();
