@@ -1,5 +1,5 @@
 window.addEventListener('load', async () => {
-    const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyufrWlyL2dWbmJMDIS8f1y8HilPwTN3maiEU9nj8dqaXkHmcjqyT6mjUZZZY_gjTiYOA/exec";
+    const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzK0fdr7fLzO4iSCS9oMe5EcPcJLlWyLa6YqLV_Bt569rDfB-nWf2XY4asYUtxLLlDdMg/exec";
 
     const urlParams = new URLSearchParams(window.location.search);
     const eventDate = urlParams.get('date');

@@ -91,7 +91,7 @@ window.onload = () => {
 
 // 회원 인증 및 캘린더 노출 로직
 //배포주소
-const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyufrWlyL2dWbmJMDIS8f1y8HilPwTN3maiEU9nj8dqaXkHmcjqyT6mjUZZZY_gjTiYOA/exec";
+const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzK0fdr7fLzO4iSCS9oMe5EcPcJLlWyLa6YqLV_Bt569rDfB-nWf2XY4asYUtxLLlDdMg/exec";
 
 window.addEventListener('load', () => {
     const savedEmail = localStorage.getItem('imhere_user_email');
