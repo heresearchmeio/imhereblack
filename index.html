@@ -373,27 +373,35 @@
             }
 
             // 외부 사이트(GitHub 등)에서는 fetch를 사용하여 GAS와 통신해야 합니다.
-            fetch(`${GAS_WEB_APP_URL}?action=checkAuth&email=${email}`)
-                .then(response => response.json())
-                .then(auth => {
-                    if (auth.isMember) {
-                        // 회원용 캘린더 URL 설정 (반드시 /embed 주소를 사용해야 함)
-                        const calId = 'heresearchmeio@gmail.com';
-                        const calUrl = `https://calendar.google.com/calendar/embed?src=${encodeURIComponent(calId)}&ctz=Asia%2FSeoul`;
-                        
-                        calIframe.src = calUrl;
-                        authSection.classList.add('hidden');
-                        calDisplay.classList.remove('hidden');
-                        
-                        alert(auth.isAdmin ? "관리자 권한으로 로그인되었습니다." : "회원님 환영합니다.");
-                    } else {
-                        alert("등록된 기사(회원)가 아닙니다. 기사등록을 먼저 해주세요.");
-                    }
-                })
-                .catch(error => {
-                    console.error("인증 실패:", error);
-                    alert("인증 서버와 통신할 수 없습니다. GAS 배포 설정을 확인하세요.");
-                });
+            fetch(`${GAS_WEB_APP_URL}?action=checkAuth&email=${encodeURIComponent(email)}`, {
+                method: 'GET',
+                mode: 'cors', // CORS 정책 허용
+                redirect: 'follow' // 구글 스크립트 리다이렉션을 따라가기 (매우 중요)
+            })
+            .then(response => {
+                // 200 OK 응답이 왔지만, 실제 데이터가 아닌 에러 페이지일 경우를 대비
+                if (!response.ok) throw new Error('네트워크 응답 에러');
+                return response.json();
+            })
+            .then(auth => {
+                if (auth.isMember) {
+                    // 회원용 캘린더 URL 설정
+                    const calId = 'heresearchmeio@gmail.com';
+                    const calUrl = `https://calendar.google.com/calendar/embed?src=${encodeURIComponent(calId)}&ctz=Asia%2FSeoul`;
+                    
+                    calIframe.src = calUrl;
+                    authSection.classList.add('hidden');
+                    calDisplay.classList.remove('hidden');
+                    
+                    alert(auth.isAdmin ? "관리자 권한으로 로그인되었습니다." : "회원님 환영합니다.");
+                } else {
+                    alert("등록된 기사(회원)가 아닙니다. 기사등록을 먼저 해주세요.");
+                }
+            })
+            .catch(error => {
+                console.error("인증 실패 상세:", error);
+                alert("인증 서버와 통신할 수 없습니다.\n1. GAS 배포 설정(모든 사용자) 확인\n2. 주소 끝이 /exec 인지 확인");
+            });
         }
 
     </script>
