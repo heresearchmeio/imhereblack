@@ -210,6 +210,11 @@
                 </div>
 
                 <div id="calendar-display" class="hidden">
+                    <div class="flex justify-end mb-2">
+                        <button onclick="logout()" class="text-xs text-gray-500 hover:text-red-400 flex items-center gap-1">
+                            <i data-lucide="log-out" class="w-3 h-3"></i> 다른 계정으로 인증
+                        </button>
+                    </div>
                     <div class="aspect-video w-full">
                         <iframe id="google-cal-iframe" src="" style="border: 0" width="100%" height="600" frameborder="0" scrolling="no"></iframe>
                     </div>
@@ -361,8 +366,19 @@
         // 회원 인증 및 캘린더 노출 로직
         //배포주소
         const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyufrWlyL2dWbmJMDIS8f1y8HilPwTN3maiEU9nj8dqaXkHmcjqyT6mjUZZZY_gjTiYOA/exec";
-        async function verifyMember() {
-            const email = document.getElementById('userEmail').value;
+       
+        window.addEventListener('load', () => {
+            const savedEmail = localStorage.getItem('imhere_user_email');
+            if (savedEmail) {
+                document.getElementById('userEmail').value = savedEmail;
+                verifyMember(true); // 자동 인증 모드로 실행
+            }
+            lucide.createIcons();
+        });
+
+        async function verifyMember(isAuto = false) {
+            const emailInput = document.getElementById('userEmail');
+            const email = emailInput.value.toLowerCase().trim();
             const calIframe = document.getElementById('google-cal-iframe');
             const authSection = document.getElementById('calendar-auth-section');
             const calDisplay = document.getElementById('calendar-display');
@@ -388,6 +404,9 @@
                 console.log("인증 성공:", auth);
 
                 if (auth.isMember) {
+                    
+                    localStorage.setItem('imhere_user_email', email);
+
                     const calId = 'heresearchmeio@gmail.com';
                     const calUrl = `https://calendar.google.com/calendar/embed?src=${encodeURIComponent(calId)}&ctz=Asia%2FSeoul`;
                     
@@ -398,12 +417,19 @@
                     alert(auth.isAdmin ? "관리자 권한으로 인증되었습니다." : "회원 인증 성공!");
                 } else {
                     alert("등록된 회원이 아닙니다.");
+                    localStorage.removeItem('imhere_user_email'); // 잘못된 정보는 삭제
                 }
             } catch (error) {
                 console.error("인증 실패 상세:", error);
                 alert("인증 서버 통신 실패. GAS 배포 권한이 '모든 사용자(Anyone)'인지 다시 확인하세요.");
             }
         }
+    function logout() {
+        if (confirm("로그아웃 하시겠습니까?")) {
+            localStorage.removeItem('imhere_user_email');
+            location.reload(); // 새로고침하여 초기 화면으로 이동
+        }
+    }
 
     </script>
 </body>
