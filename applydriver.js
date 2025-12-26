@@ -1,16 +1,10 @@
 window.addEventListener('load', async () => {
     const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyufrWlyL2dWbmJMDIS8f1y8HilPwTN3maiEU9nj8dqaXkHmcjqyT6mjUZZZY_gjTiYOA/exec";
 
-   const urlParams = new URLSearchParams(window.location.search);
-    
-    // 1. 값 추출 및 Trim(공백 제거) 처리로 undefined/null 방지
-    const rawDate = urlParams.get('date');
-    const rawTitle = urlParams.get('title');
-    
-    const eventDate = rawDate ? rawDate.trim() : null;
-    const eventTitle = rawTitle ? rawTitle.trim() : null;
+    const urlParams = new URLSearchParams(window.location.search);
+    const eventDate = urlParams.get('date');
+    const eventTitle = urlParams.get('title');
     const savedEmail = localStorage.getItem('imhere_user_email');
-    const statusEl = document.getElementById('status');
 
     // 디버깅: 값이 제대로 들어왔는지 콘솔에서 확인 가능
     console.log("파라미터 체크:", { eventDate, eventTitle, savedEmail });
