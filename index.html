@@ -458,7 +458,7 @@
                     
                     alert(result.message);
                     if (result.success) {
-                        location.reload(); // 성공 시 현재 창 갱신
+                       this.window.close();
                     }
                 } catch (e) {
                     alert("신청 중 오류가 발생했습니다.");
