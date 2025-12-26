@@ -37,6 +37,15 @@ window.addEventListener('load', async () => {
                 redirect: "follow" 
             });
 
+            const text = await response.text(); // 일단 텍스트로 받아서 내용을 확인
+            console.log("서버 응답 원본:", text); // 개발자 도구(F12) 콘솔에서 확인 가능
+            try {
+                const result = JSON.parse(text);
+                alert(result.message || "결과 메시지가 없습니다."); 
+            } catch (e) {
+                alert("서버 응답을 해석할 수 없습니다: " + text);
+            }
+
             if (!response.ok) throw new Error('네트워크 응답 에러');
 
             const result = await response.json();
