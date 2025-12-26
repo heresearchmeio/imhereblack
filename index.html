@@ -432,29 +432,44 @@
             const urlParams = new URLSearchParams(window.location.search);
             const applyId = urlParams.get('apply');
             const savedEmail = localStorage.getItem('imhere_user_email');
-            if (applyId) {
-                if (!savedEmail) {
-                    alert("로그인이 필요합니다. 이메일 인증을 먼저 진행해 주세요.");
-                    return;
-                }
 
-                // 즉시 신청 시도
-                if (confirm("이 배차 일정을 신청하시겠습니까?")) {
-                    try {
-                        const response = await fetch(`${GAS_WEB_APP_URL}?apply=${applyId}&email=${savedEmail}`);
-                        const result = await response.json();
-                        alert(result.message);
-                        
-                        // URL 파라미터 제거 후 새로고침
-                        window.history.replaceState({}, document.title, "/");
-                        location.reload();
-                    } catch (e) {
-                        alert("신청 중 네트워크 오류가 발생했습니다.");
+            if (applyId) {
+                    // 주소창에서 파라미터는 즉시 제거 (새로고침 시 팝업 반복 방지)
+                    window.history.replaceState({}, document.title, window.location.pathname);
+
+                    if (!savedEmail) {
+                        alert("로그인이 필요합니다. 이메일 인증을 먼저 완료해 주세요.");
+                        return;
                     }
+
+                    // [핵심] 브라우저 기본 alert 대신 커스텀 팝업을 띄울 수 있습니다.
+                    // 여기서는 가장 직관적인 확인 팝업을 사용합니다.
+                    showApplyModal(applyId, savedEmail);
                 }
+                
+                checkAutoLogin(); 
+        });
+
+        // 신청 확인 팝업 함수
+        async function showApplyModal(eventId, email) {
+            if (confirm("이 배차 일정을 신청하시겠습니까?\n확인 시 즉시 배차 마감됩니다.")) {
+                try {
+                    // 로딩 표시 (선택사항)
+                    const response = await fetch(`${GAS_WEB_APP_URL}?action=applyAssignment&apply=${eventId}&email=${email}`);
+                    const result = await response.json();
+                    
+                    // 결과 알림
+                    alert(result.message);
+                    
+                    // 성공 시 캘린더 새로고침 (마감 반영)
+                    if (result.success) {
+                        location.reload();
+                    }
+                } catch (e) {
+                    alert("신청 처리 중 오류가 발생했습니다.");
+                }
+            }
         }
-        checkAutoLogin(); // 기존 자동 로그인 유지
-    });
     </script>
 </body>
 </html>
