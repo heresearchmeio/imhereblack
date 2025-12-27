@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ImHere-Black | 프리미엄 기사 파트너</title>
+    <base target="_self"> 
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;900&display=swap');
+        body { 
+            font-family: 'Pretendard', sans-serif; 
+            background-color: #000000;
+            color: #f1f5f9;
+        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s ease-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .logo-container {
+            position: relative;
+            background: rgba(255, 255, 255, 0.15); /* 로고 가시성 확보 */
+            padding: 4px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .logo-img { width: 34px; height: 34px; object-fit: contain; }
+
+        /* 입력 폼 스타일링 */
+        .input-field {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: all 0.3s;
+        }
+        .input-field:focus {
+            border-color: #10b981;
+            background: rgba(255, 255, 255, 0.1);
+            outline: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <nav class="sticky top-0 z-50 glass-card border-b border-white/10 px-4 py-3">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <div onclick="showTab('home')" class="flex items-center gap-3 cursor-pointer group">
+                <div class="logo-container">
+                    <img src="imhereblack.jpg" alt="Logo" class="logo-img" onerror="this.src='https://via.placeholder.com/34/333/fff?text=IM'">
+                </div>
+                <span class="text-xl font-black tracking-tighter text-white">ImHere-Black</span>
+            </div>
+            
+            <div class="flex items-center gap-1 md:gap-2">
+                
+                <button onclick="showTab('schedule')" class="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-all">
+                    <i data-lucide="truck" class="w-4 h-4 text-emerald-400"></i>
+                    <span class="text-sm font-bold hidden sm:inline">배차현황</span>
+                </button>
+                <button onclick="showTab('register')" class="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-all border border-white/5">
+                    <i data-lucide="user-plus" class="w-4 h-4 text-emerald-500"></i>
+                    <span class="text-sm font-bold hidden sm:inline text-emerald-500">기사등록</span>
+                </button>
+                <button onclick="showTab('notice')" class="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-all">
+                    <i data-lucide="bell-ring" class="w-4 h-4 text-amber-400"></i>
+                    <span class="text-sm font-bold hidden sm:inline">알림</span>
+                </button>
+                <button onclick="showTab('about')" class="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-all">
+                    <!-- <i data-lucide="layout-dashboard" class="w-4 h-4 text-blue-400"></i> -->
+                    <i data-lucide="building" class="w-4 h-4 text-blue-400"></i>
+                    <span class="text-sm font-bold hidden sm:inline">회사소개</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto p-6 w-full flex-grow">
+
+        <div id="home" class="tab-content active space-y-6">
+            <div class="glass-card rounded-[2rem] p-8 md:p-12 border-l-4 border-emerald-500 overflow-hidden relative">
+                <div class="relative z-10">
+                    <span class="bg-emerald-500/20 text-emerald-400 text-xs font-bold px-3 py-1 rounded-full mb-4 inline-block">24/7 전문 기사 서비스</span>
+                    <h2 class="text-3xl md:text-4xl font-black mb-4 leading-tight">
+                        멈춰있는 시간을<br>안전한 이동으로 연결합니다.
+                    </h2>
+                    <p class="text-gray-400 text-base md:text-lg max-w-2xl mb-8 leading-relaxed">
+                        낮의 번잡함부터 밤의 정적까지, <span class="text-white">ImHere-Black</span>은 <br class="hidden md:block">
+                        소중한 고객님과 기사님의 성실함을 가장 신뢰 있는 방식으로 잇습니다.
+                    </p>
+                    <div class="flex gap-4">
+                        <button onclick="showTab('schedule')" class="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-3 rounded-xl font-bold transition-all flex items-center gap-2">
+                            <i data-lucide="play-circle" class="w-5 h-5"></i> 배차 현황
+                        </button>
+                        <button onclick="showTab('register')" class="bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-xl font-bold transition-all flex items-center gap-2">
+                             <i data-lucide="user-plus" class="w-5 h-5"></i> 기사 등록
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="glass-card rounded-2xl p-8">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="flex items-center gap-2 font-bold text-lg"><i data-lucide="bell-ring" class="text-amber-500"></i>알림 </h3>
+                        <span onclick="showTab('notice')" class="text-xs text-white-500 cursor-pointer">더보기</span>
+                    </div>
+                </div>           
+
+                <div class="glass-card rounded-2xl p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="flex items-center gap-2 font-bold text-lg"><i data-lucide="info" class="text-blue-500"></i> 블랙 브리핑</h3>
+                        <span onclick="showTab('notice')" class="text-xs text-gray-500 cursor-pointer">더보기</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="register" class="tab-content">
+            <div class="max-w-4xl mx-auto glass-card rounded-3xl overflow-hidden border border-emerald-500/20 shadow-2xl">
+                <div class="bg-emerald-500/10 p-6 text-center border-b border-emerald-500/20">
+                    <h2 class="text-2xl font-black text-white">파트너 기사 신청</h2>
+                    <p class="text-sm text-gray-400 mt-1">아래 양식을 작성하여 제출해 주세요.</p>
+                </div>
+                
+                <div class="relative w-full" style="padding-top: 150%;"> 
+                    <iframe 
+                        src="https://docs.google.com/forms/d/e/1FAIpQLSewqo8daGxSvz59HXkFb-MXPV8_F0gcZn6wLQ7uNJDvIjE7Wg/viewform?usp=header" 
+                        class="absolute top-0 left-0 w-full h-full border-0"
+                        frameborder="0" 
+                        marginheight="0" 
+                        marginwidth="0">
+                        로드 중…
+                    </iframe>
+                </div>
+            </div>
+            <p class="text-center text-xs text-gray-500 mt-4">양식 제출 후 관리자 승인까지 최대 24시간이 소요될 수 있습니다.</p>
+        </div>
+
+        <div id="login" class="tab-content">
+            <div class="max-w-md mx-auto mt-10 glass-card rounded-3xl p-10 border border-white/10 shadow-2xl">
+                <div class="text-center mb-8">
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/5 mb-4 border border-white/10">
+                        <i data-lucide="lock" class="text-white w-8 h-8"></i>
+                    </div>
+                    <h2 class="text-2xl font-black text-white">ADMIN LOGIN</h2>
+                    <p class="text-sm text-gray-500 mt-2">관리자 인증이 필요합니다.</p>
+                </div>
+                <div class="space-y-4">
+                    <input type="text" placeholder="이메일" class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-blue-500 transition-all">
+                    <input type="password" placeholder="비밀번호" class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-blue-500 transition-all">
+                    <button class="w-full py-4 bg-white text-black font-black rounded-xl hover:bg-gray-200 transition-all mt-4">접속하기</button>
+                </div>
+                <button onclick="showTab('home')" class="w-full mt-6 text-xs text-gray-500 hover:text-white transition-colors">홈으로 돌아가기</button>
+            </div>
+        </div>
+
+        <div id="about" class="tab-content">
+            <div class="max-w-3xl mx-auto glass-card rounded-3xl p-8 md:p-12 text-center">
+                <div class="logo-container w-20 h-20 mx-auto mb-6">
+                    <img src="imhereblack.jpg" alt="Logo" class="w-full h-full object-contain rounded-lg">
+                </div>
+                <h2 class="text-3xl font-black mb-4">언제나 당신 곁에, ImHere-Black</h2>
+                <div class="h-1 w-12 bg-emerald-500 mx-auto mb-8"></div>
+                
+                <div class="space-y-6 text-gray-300 text-lg leading-relaxed text-left md:text-center">
+                    <p>
+                        우리는 <span class="text-white font-bold">'기다림'</span>을 <span class="text-emerald-400 font-bold">'움직임'</span>으로 바꿉니다.
+                    </p>
+                    <p>
+                        낮에는 햇살 아래 뜨거운 열정으로, 밤에는 달빛 아래 고요한 책임감으로 <br class="hidden md:block">
+                        기사님들이 안전하게 대기하고 신속하게 이동할 수 있는 환경을 만듭니다.
+                    </p>
+                    <p>
+                        고객님의 소중한 인연, <br class="hidden md:block">
+                        그 신뢰가 끊기지 않도록 최고의 서비스로 보답하겠습니다.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mt-12">
+                    <div class="p-4 bg-white/5 rounded-2xl">
+                        <p class="text-2xl font-black text-white">24h</p>
+                        <p class="text-xs text-gray-500">신속한 응대</p>
+                    </div>
+                    <div class="p-4 bg-white/5 rounded-2xl">
+                        <p class="text-2xl font-black text-white">Safe</p>
+                        <p class="text-xs text-gray-500">안전한 서비스</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="schedule" class="tab-content">
+            <div class="glass-card rounded-2xl p-8">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                    <i data-lucide="calendar"></i> 배차 일정 및 신청
+                </h2>
+                
+                <div id="calendar-auth-section" class="mb-6">
+                    <p class="text-sm text-gray-400 mb-4">일정을 확인하고 신청하려면 회원 이메일(구글 gmail) 인증이 필요합니다.</p>
+                    <input type="email" id="userEmail" placeholder="이메일 입력" class="input-field p-2 rounded-lg w-full max-w-xs text-sm">
+                    <button onclick="verifyMember()" class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-bold">인증하기</button>
+                </div>
+
+                <div id="calendar-display" class="hidden">
+                    <div class="flex justify-end mb-2">
+                        <button onclick="logout()" class="text-xs text-gray-500 hover:text-red-400 flex items-center gap-1">
+                            <i data-lucide="log-out" class="w-3 h-3"></i> 다른 계정으로 인증
+                        </button>
+                    </div>
+                    <div class="aspect-video w-full">
+                        <iframe id="google-cal-iframe" src="" style="border: 0" width="100%" height="600" frameborder="0" scrolling="no"></iframe>
+                    </div>
+                    
+                    <div class="mt-6 p-4 bg-white/5 rounded-xl border border-white/10">
+                        <h3 class="text-sm font-bold text-emerald-400 mb-2">배정 신청은 해당 일정을 선택하고, '배정 신청' 링크를 클릭하세요</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<script>
+
+</script>
+
+        <div id="notice" class="tab-content">
+            <div class="glass-card rounded-2xl p-8">
+                <h2 class="text-2xl font-bold mb-6">알림</h2>
+                <div class="p-4 bg-amber-500/10 rounded-xl border border-amber-500/20">
+                    <p class="text-sm font-bold text-amber-200 underline">아임히어 이용안내</p>
+                    <p class="text-xs text-amber-500/80 mt-1">Gmail(구글메일)을 이용하여 '기사등록' 바랍니다.</p>
+                </div>
+            </div>
+            <div class="glass-card rounded-2xl p-8">
+                <h2 class="text-2xl font-bold mb-6">블랙 브리핑</h2>
+                <div class="p-4 bg-amber-500/10 rounded-xl border border-amber-500/20">
+                    <p class="text-xs text-amber-500/80 mt-1">최신 트렌드, 뉴스, 기술, 경제용어 , 제태크 정보 등 다가오는 부의 지도를 함께 그려나가요!</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="blogger-notice-container" class="space-y-4 pt-4">
+           <p class="text-center text-gray-600 text-sm py-10">최신 소식을 불러오는 중...</p>
+        </div>
+        
+    </main>
+    
+    
+    <footer class="p-8 text-center border-t border-white/5">
+        <p class="text-gray-600 text-[10px] tracking-widest uppercase">Reliable Delivery Partner</p>
+        <p><a href="mailto:heresearchmeio@gmail.com?subject=[아임히어 블랙 문의]" class="text-xs text-amber-500/80 mt-1">고객센터</a></p>
+        <p class="text-gray-500 text-xs mt-2">© ImHere-Black Since 2025. All rights reserved.</p>
+    </footer>
+
+    <script src="index.js"></script>
+
+</body>
+</html>
