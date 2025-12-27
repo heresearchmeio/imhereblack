@@ -20,24 +20,31 @@ async function loadTabData(tabId) {
         }
     }
 }
-// 탭 전환 함수
+
 function showTab(tabId) {
-    // 모든 탭 숨기기
+    // 1. 로그인이 필요 없는 메뉴 정의
+    const publicTabs = ['home', 'notice', 'about', 'login'];
+    
+    // 2. 로그인 여부 확인
+    const userEmail = localStorage.getItem('imhere_user_email');
+
+    // 3. 권한 체크
+    if (!publicTabs.includes(tabId) && !userEmail) {
+        alert("이 메뉴는 로그인이 필요합니다.");
+        // 원래 가려던 목적지를 저장해둠 (로그인 후 돌아오기 위함)
+        localStorage.setItem('redirect_tab', tabId);
+        tabId = 'login'; // 로그인 페이지로 강제 변경
+    }
+
+    // 4. 탭 활성화 로직 (기존 유지)
     document.querySelectorAll('.tab-content').forEach(content => {
         content.classList.remove('active');
     });
 
-    // 선택된 탭 데이터 로드 및 활성화
-    loadTabData(tabId);
+    loadTabData(tabId); // 외부 HTML 로드 함수 호출
     document.getElementById(tabId).classList.add('active');
-    
-    // 페이지 최상단 이동
     window.scrollTo(0, 0);
-
-    //알림 탭 진입 시 데이터 로드
-    if(tabId === 'notice') fetchBloggerNotice();
 }
-
 // // 탭 전환 함수
 // function showTab(tabId) {
 //     document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
