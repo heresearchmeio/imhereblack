@@ -1,5 +1,6 @@
 const GOOGLE_CLIENT_ID = "1016049886108-ttqmojmq4u9b8uiee951d2db08er1fpc.apps.googleusercontent.com"; // 여기에 복사한 ID 입력
 const MEMBER_CHECK_URL = "https://script.google.com/macros/s/AKfycbzKWJckg7zHVqBLkyz4lRT9oYH5pXZo9FnStDXkrtKvgX3FK2d13hKq8seqciWXdYGR/exec"; 
+const KAKAO_JS_KEY = "2c0d47df13750dfe8eecba153220473e"; // 복사한 키 입력
 
 const GoogleAuthManager = {
     isInitialized: false,
@@ -107,4 +108,52 @@ function parseJwt(token) {
 // 백엔드 연동용 함수 (동일)
 async function checkMemberFromGAS(email) {
     return false; 
+}
+
+
+// 카카오 SDK 초기화
+if (!Kakao.isInitialized()) {
+    Kakao.init(KAKAO_JS_KEY);
+}
+
+/**
+ * 카카오 로그인 실행
+ */
+function loginWithKakao() {
+    Kakao.Auth.login({
+        success: function(authObj) {
+            // 인증 성공 시 사용자 정보 가져오기
+            Kakao.API.request({
+                url: '/v2/user/me',
+                success: async function(res) {
+                    const userEmail = res.kakao_account.email;
+                    console.log("카카오 인증 성공:", userEmail);
+
+                    if (!userEmail) {
+                        alert("이메일 제공 동의가 필요합니다.");
+                        return;
+                    }
+
+                    // 업무 플로우: 이메일 저장 및 회원 확인
+                    localStorage.setItem('imhere_user_email', userEmail);
+                    const isRegistered = await checkMemberFromGAS(userEmail);
+
+                    if (isRegistered) {
+                        const target = localStorage.getItem('redirect_tab') || 'home';
+                        localStorage.removeItem('redirect_tab');
+                        showTab(target);
+                    } else {
+                        alert("신규 기사님입니다. 등록 페이지로 이동합니다. (Gmail 필수)");
+                        showTab('register');
+                    }
+                },
+                fail: function(error) {
+                    console.error(error);
+                }
+            });
+        },
+        fail: function(err) {
+            console.error(err);
+        }
+    });
 }
