@@ -119,53 +119,58 @@ if (!Kakao.isInitialized()) {
     Kakao.init(KAKAO_JS_KEY);
 }
 
-/**
- * 카카오 로그인 실행
- */
+// login.js
+
 function loginWithKakao() {
-    // 1. 초기화 재확인
+    // 1. 초기화 확인
     if (!Kakao.isInitialized()) {
         Kakao.init(KAKAO_JS_KEY);
     }
 
-    // 2. v2 방식: 팝업 로그인 호출
-    Kakao.Auth.loginWithPopup({
+    // 2. v2 SDK에서는 Kakao.Auth.login을 호출하거나 
+    // 직접 authorize를 호출해야 합니다.
+    // 팝업 방식이 차단될 경우를 대비해 authorize 방식을 권장하지만, 
+    // 요구사항에 맞춰 팝업형태로 시도합니다.
+    
+    Kakao.Auth.login({
         success: function(authObj) {
-            console.log("카카오 인증 성공 토큰:", authObj);
+            console.log('인증 성공', authObj);
             
-            // 3. 사용자 정보 요청
-             Kakao.API.request({
+            // 사용자 정보 가져오기
+            Kakao.API.request({
                 url: '/v2/user/me',
                 success: async function(res) {
                     const userEmail = res.kakao_account.email;
                     
                     if (!userEmail) {
-                        alert("이메일 정보 제공 동의가 필요합니다.");
+                        alert("이메일 정보 제공 동의가 필수입니다.");
                         return;
                     }
 
-                    console.log("이메일 추출 완료:", userEmail);
+                    console.log("카카오 이메일 추출:", userEmail);
                     localStorage.setItem('imhere_user_email', userEmail);
 
-                    // 4. GAS 회원 여부 확인 및 리다이렉션
+                    // GAS 회원 확인 로직
                     const isRegistered = await checkMemberFromGAS(userEmail);
+
                     if (isRegistered) {
                         const target = localStorage.getItem('redirect_tab') || 'home';
                         localStorage.removeItem('redirect_tab');
                         showTab(target);
                     } else {
-                        alert("신규 기사님입니다. 등록 페이지로 이동합니다. (Gmail 필수)");
+                        alert("신규 기사님입니다. 등록 페이지로 이동합니다.");
                         showTab('register');
                     }
                 },
                 fail: function(error) {
-                    console.error("사용자 정보 요청 실패", error);
+                    console.error('사용자 정보 요청 실패', error);
                 }
             });
         },
         fail: function(err) {
-            console.error("카카오 로그인 실패", err);
-            alert("로그인에 실패했습니다.");
+            console.error('로그인 실패', err);
+            // 만약 여기서 "not a function"이 또 뜬다면 
+            // 현재 로드된 SDK가 Kakao.Auth.authorize만 지원하는 것입니다.
         }
     });
 }
