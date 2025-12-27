@@ -8,7 +8,7 @@ const GOOGLE_CLIENT_ID = "1016049886108-ttqmojmq4u9b8uiee951d2db08er1fpc.apps.go
 function initGoogleLogin() {
     if (typeof google !== 'undefined') {
         google.accounts.id.initialize({
-            client_id: "YOUR_CLIENT_ID.apps.googleusercontent.com",
+            client_id: GOOGLE_CLIENT_ID,
             callback: handleCredentialResponse,
             ux_mode: "popup",
             // FedCM 에러 방지를 위한 추가 설정
