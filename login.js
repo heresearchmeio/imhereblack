@@ -5,22 +5,25 @@ const GOOGLE_CLIENT_ID = "1016049886108-ttqmojmq4u9b8uiee951d2db08er1fpc.apps.go
 function loginWithSNS(platform) {
     if (platform === 'google') {
         googleLogin();
-    } else {
-        alert(`${platform} 인증은 준비 중입니다.`);
     }
 }
 
 function googleLogin() {
     google.accounts.id.initialize({
         client_id: GOOGLE_CLIENT_ID,
-        callback: handleCredentialResponse // 인증 후 실행될 함수
+        callback: handleCredentialResponse,
+        // FedCM 정책으로 인한 에러를 방지하기 위해 ux_mode를 지정할 수 있습니다.
+        ux_mode: "popup" 
     });
-    
-    // Google 로그인 팝업 표시
-    google.accounts.id.prompt(); 
-    
-    // 또는 버튼을 직접 렌더링하고 싶다면 특정 div에 그릴 수 있습니다.
-    // google.accounts.id.renderButton(document.getElementById("googleBtn"), { size: "large" });
+
+    // 💡 팝업 방식(prompt) 대신 강제 로그인을 유도하려면 
+    // 아래 팝업을 호출하기 전에 UI에 버튼을 렌더링하는 것이 권장됩니다.
+    google.accounts.id.prompt((notification) => {
+        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+            console.log("자동 팝업이 차단됨. 버튼 클릭 로그인을 유도하세요.");
+            // 팝업이 차단된 경우, 별도의 로그인 버튼을 표시하거나 재시도 로직을 넣을 수 있습니다.
+        }
+    });
 }
 
 // Google에서 인증 정보를 받았을 때 실행되는 콜백
