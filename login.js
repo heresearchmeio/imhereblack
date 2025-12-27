@@ -123,24 +123,32 @@ if (!Kakao.isInitialized()) {
  * 카카오 로그인 실행
  */
 function loginWithKakao() {
-    Kakao.Auth.login({
+    // 1. 초기화 재확인
+    if (!Kakao.isInitialized()) {
+        Kakao.init(KAKAO_JS_KEY);
+    }
+
+    // 2. v2 방식: 팝업 로그인 호출
+    Kakao.Auth.loginWithPopup({
         success: function(authObj) {
-            // 인증 성공 시 사용자 정보 가져오기
-            Kakao.API.request({
+            console.log("카카오 인증 성공 토큰:", authObj);
+            
+            // 3. 사용자 정보 요청
+             Kakao.API.request({
                 url: '/v2/user/me',
                 success: async function(res) {
                     const userEmail = res.kakao_account.email;
-                    console.log("카카오 인증 성공:", userEmail);
-
+                    
                     if (!userEmail) {
-                        alert("이메일 제공 동의가 필요합니다.");
+                        alert("이메일 정보 제공 동의가 필요합니다.");
                         return;
                     }
 
-                    // 업무 플로우: 이메일 저장 및 회원 확인
+                    console.log("이메일 추출 완료:", userEmail);
                     localStorage.setItem('imhere_user_email', userEmail);
-                    const isRegistered = await checkMemberFromGAS(userEmail);
 
+                    // 4. GAS 회원 여부 확인 및 리다이렉션
+                    const isRegistered = await checkMemberFromGAS(userEmail);
                     if (isRegistered) {
                         const target = localStorage.getItem('redirect_tab') || 'home';
                         localStorage.removeItem('redirect_tab');
@@ -151,12 +159,13 @@ function loginWithKakao() {
                     }
                 },
                 fail: function(error) {
-                    console.error(error);
+                    console.error("사용자 정보 요청 실패", error);
                 }
             });
         },
         fail: function(err) {
-            console.error(err);
+            console.error("카카오 로그인 실패", err);
+            alert("로그인에 실패했습니다.");
         }
     });
 }
