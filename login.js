@@ -108,3 +108,46 @@ function showTab(tabId) {
     window.scrollTo(0, 0);
 }
 
+// login.js 내 수정 부분
+
+// 💡 배포 후 받은 웹 앱 URL을 입력하세요.
+const MEMBER_CHECK_URL = "https://script.google.com/macros/s/AKfycbzKWJckg7zHVqBLkyz4lRT9oYH5pXZo9FnStDXkrtKvgX3FK2d13hKq8seqciWXdYGR/exec"; 
+
+async function checkMemberFromGAS(email) {
+    try {
+        const response = await fetch(`${MEMBER_CHECK_URL}?action=checkMember&email=${encodeURIComponent(email)}`);
+        const result = await response.json();
+        
+        return result.isRegistered; // true 또는 false 반환
+    } catch (e) {
+        console.error("GAS 연동 에러:", e);
+        return false;
+    }
+}
+
+// Google 로그인 콜백 처리 보완
+async function handleCredentialResponse(response) {
+    const payload = parseJwt(response.credential);
+    const userEmail = payload.email;
+
+    if (!userEmail.endsWith('@gmail.com')) {
+        alert("기사 로그인은 Gmail 계정으로만 가능합니다.");
+        return;
+    }
+
+    localStorage.setItem('imhere_user_email', userEmail);
+
+    // 💡 서버에 회원 확인 요청
+    const isRegistered = await checkMemberFromGAS(userEmail);
+
+    if (isRegistered) {
+        // 이미 등록된 회원이면 원래 목적지로 이동
+        const targetTab = localStorage.getItem('redirect_tab') || 'home';
+        localStorage.removeItem('redirect_tab');
+        showTab(targetTab);
+    } else {
+        // 미등록 회원이면 기사등록 탭으로 이동
+        alert("회원 정보가 없습니다. 기사 등록을 진행해 주세요.");
+        showTab('register');
+    }
+}
