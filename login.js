@@ -3,7 +3,7 @@
 const GOOGLE_CLIENT_ID = "1016049886108-ttqmojmq4u9b8uiee951d2db08er1fpc.apps.googleusercontent.com"; // 여기에 복사한 ID 입력
 const MEMBER_CHECK_URL = "https://script.google.com/macros/s/AKfycbzKWJckg7zHVqBLkyz4lRT9oYH5pXZo9FnStDXkrtKvgX3FK2d13hKq8seqciWXdYGR/exec"; 
 
-let isGoogleInitialized = false;
+const isGoogleInitialized = false;
 
 function loginWithSNS(platform) {
     if (platform === 'google') {
