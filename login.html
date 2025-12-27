@@ -8,10 +8,29 @@
     </div>
 
     <div class="space-y-3">
-        <button onclick="loginWithSNS('google')" class="w-full flex items-center justify-center gap-3 py-3 px-4 bg-white text-black font-bold rounded-xl hover:bg-gray-200 transition-all">
+        <div class="flex flex-col items-center gap-4">
+            <div id="g_id_onload"
+                 data-client_id="YOUR_CLIENT_ID.apps.googleusercontent.com"
+                 data-context="signin"
+                 data-ux_mode="popup"
+                 data-callback="handleCredentialResponse"
+                 data-auto_prompt="false">
+            </div>
+        
+            <div class="g_id_signin"
+                 data-type="standard"
+                 data-shape="rectangular"
+                 data-theme="outline"
+                 data-text="signin_with"
+                 data-size="large"
+                 data-logo_alignment="left"
+                 data-width="320">
+            </div>
+        </div>
+        <!-- <button onclick="loginWithSNS('google')" class="w-full flex items-center justify-center gap-3 py-3 px-4 bg-white text-black font-bold rounded-xl hover:bg-gray-200 transition-all">
             <img src="https://www.gstatic.com/images/branding/product/1x/gmail_32dp.png" class="w-5 h-5" alt="Google">
             <span class="text-sm">Google로 계속하기</span>
-        </button>
+        </button> -->
 
         <button onclick="loginWithSNS('kakao')" class="w-full flex items-center justify-center gap-3 py-3 px-4 bg-[#FEE500] text-[#191919] font-bold rounded-xl hover:opacity-90 transition-all">
             <i data-lucide="message-circle" class="w-4 h-4 fill-current"></i>
