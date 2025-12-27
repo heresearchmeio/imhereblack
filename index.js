@@ -123,11 +123,11 @@ function showTab(tabId) {
 //     lucide.createIcons();
 // }
 
-// 초기 실행
-window.onload = () => {
-    lucide.createIcons();
-    fetchBloggerNotice(); // 홈 화면 미리보기를 위해 첫 로딩 시 호출
-};
+// // 초기 실행
+// window.onload = () => {
+//     lucide.createIcons();
+//     fetchBloggerNotice(); // 홈 화면 미리보기를 위해 첫 로딩 시 호출
+// };
 
 // // 회원 인증 및 캘린더 노출 로직
 // //배포주소
