@@ -12,7 +12,10 @@ let isGoogleInitialized = false;
 function loginWithSNS(platform) {
     if (platform === 'google') {
         googleLogin();
-    } else {
+    } 
+    else if(platform == 'kakao'){
+        loginWithKakao();
+    } else {
         alert(`${platform} 인증은 준비 중입니다.`);
     }
 }
