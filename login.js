@@ -31,41 +31,66 @@ function initializeGoogleSDK() {
 
 // 페이지 로드 즉시 시도하고, 만약 SDK 로드가 늦어질 경우를 대비해 인터벌 체크
 window.addEventListener('load', initializeGoogleSDK);
-
+// 2. 로그인 실행 (사용자 클릭 이벤트 핸들러)
 function googleLogin(event) {
-    // [중요] 클릭 이벤트가 상위로 퍼지는 것을 막아 중복 호출 방지
-    if (event && event.preventDefault) {
+    if (event) {
         event.preventDefault();
         event.stopPropagation();
     }
 
-    // 혹시라도 초기화가 안 되어 있다면 다시 시도
-    if (!isGoogleInitialized) {
+    if (!GoogleAuthManager.isInitialized) {
+        console.warn("SDK 초기화 중입니다. 잠시 후 다시 시도해주세요.");
         initializeGoogleSDK();
+        return;
     }
 
-    try {
-        google.accounts.id.prompt((notification) => {
-            if (notification.isNotDisplayed()) {
-                const reason = notification.getNotDisplayedReason();
-                console.warn("팝업 미표시 사유:", reason);
-                
-                // [해결책] 만약 FedCM이나 'skipped' 에러로 안 뜬다면, 
-                // 강제로 구글 로그인 표준 버튼을 렌더링하거나 다른 방식으로 유도해야 합니다.
-                if (reason === 'opt_out_or_no_session') {
-                    alert("구글 계정에 로그인되어 있지 않거나 세션이 만료되었습니다.");
-                }
-            }
+    google.accounts.id.prompt((notification) => {
+        if (notification.isNotDisplayed()) {
+            const reason = notification.getNotDisplayedReason();
+            console.warn("⚠️ 팝업 미표시 사유:", reason);
             
-            // AbortError가 발생하는 지점: 브라우저가 신호를 가로챌 때
-            if (notification.isSkippedMoment()) {
-                console.log("프롬프트가 스킵됨 (신호 중단됨)");
+            // 핵심: 원탭(Prompt)이 거부된 경우, '표준 버튼'을 띄우는 것이 가장 안전합니다.
+            if (reason === 'skipped_by_user' || reason === 'opt_out_or_no_session') {
+                alert("구글 로그인을 위해 브라우저의 구글 세션을 확인하거나, 페이지 내 로그인 버튼을 직접 클릭해 주세요.");
+                // 여기에 google.accounts.id.renderButton()을 호출하는 로직을 추가하면 좋습니다.
             }
-        });
-    } catch (e) {
-        console.error("구글 로그인 실행 중 오류:", e);
-    }
+        }
+    });
 }
+// function googleLogin(event) {
+//     // [중요] 클릭 이벤트가 상위로 퍼지는 것을 막아 중복 호출 방지
+//     if (event && event.preventDefault) {
+//         event.preventDefault();
+//         event.stopPropagation();
+//     }
+
+//     // 혹시라도 초기화가 안 되어 있다면 다시 시도
+//     if (!isGoogleInitialized) {
+//         initializeGoogleSDK();
+//     }
+
+//     try {
+//         google.accounts.id.prompt((notification) => {
+//             if (notification.isNotDisplayed()) {
+//                 const reason = notification.getNotDisplayedReason();
+//                 console.warn("팝업 미표시 사유:", reason);
+                
+//                 // [해결책] 만약 FedCM이나 'skipped' 에러로 안 뜬다면, 
+//                 // 강제로 구글 로그인 표준 버튼을 렌더링하거나 다른 방식으로 유도해야 합니다.
+//                 if (reason === 'opt_out_or_no_session') {
+//                     alert("구글 계정에 로그인되어 있지 않거나 세션이 만료되었습니다.");
+//                 }
+//             }
+            
+//             // AbortError가 발생하는 지점: 브라우저가 신호를 가로챌 때
+//             if (notification.isSkippedMoment()) {
+//                 console.log("프롬프트가 스킵됨 (신호 중단됨)");
+//             }
+//         });
+//     } catch (e) {
+//         console.error("구글 로그인 실행 중 오류:", e);
+//     }
+// }
 
 // Google에서 인증 정보를 받았을 때 실행되는 콜백 (로직 동일)
 async function handleCredentialResponse(response) {
