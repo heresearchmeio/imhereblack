@@ -3,64 +3,84 @@
 const GOOGLE_CLIENT_ID = "1016049886108-ttqmojmq4u9b8uiee951d2db08er1fpc.apps.googleusercontent.com"; // 여기에 복사한 ID 입력
 const MEMBER_CHECK_URL = "https://script.google.com/macros/s/AKfycbzKWJckg7zHVqBLkyz4lRT9oYH5pXZo9FnStDXkrtKvgX3FK2d13hKq8seqciWXdYGR/exec"; 
 
-/**
- * 구글 인증 성공 시 호출되는 콜백 함수
- */
+// login.js
+
+function loginWithSNS(platform) {
+    if (platform === 'google') {
+        googleLogin();
+    } else {
+        alert(`${platform} 인증은 준비 중입니다.`);
+    }
+}
+
+function googleLogin() {
+    google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: handleCredentialResponse // 인증 후 실행될 함수
+    });
+    
+    // Google 로그인 팝업 표시
+    google.accounts.id.prompt(); 
+    
+    // 또는 버튼을 직접 렌더링하고 싶다면 특정 div에 그릴 수 있습니다.
+    // google.accounts.id.renderButton(document.getElementById("googleBtn"), { size: "large" });
+}
+
+// Google에서 인증 정보를 받았을 때 실행되는 콜백
 async function handleCredentialResponse(response) {
+    // 1. JWT 토큰 해독 (간단한 디코딩을 위해 payload 추출)
+    const responsePayload = parseJwt(response.credential);
+    
+    console.log("ID: " + responsePayload.sub);
+    console.log('Email: ' + responsePayload.email);
+    
+    const userEmail = responsePayload.email;
+
+    // 2. Gmail 여부 확인 (기사님 등록 조건)
+    if (!userEmail.endsWith('@gmail.com')) {
+        alert("기사 등록 및 로그인은 Gmail 계정으로만 가능합니다.");
+        return;
+    }
+
+    // 3. LocalStorage 저장
+    localStorage.setItem('imhere_user_email', userEmail);
+
+    // 4. 백엔드(GAS)에 회원 여부 확인 요청
+    // 이 단계는 나중에 Code.gs API를 만든 후 연결합니다.
     try {
-        const payload = parseJwt(response.credential);
-        const userEmail = payload.email;
-
-        // 1. Gmail 체크
-        if (!userEmail.endsWith('@gmail.com')) {
-            alert("기사 로그인은 Gmail 계정으로만 가능합니다.");
-            return;
-        }
-
-        // 2. 로컬 스토리지 저장
-        localStorage.setItem('imhere_user_email', userEmail);
-
-        // 3. GAS 백엔드 회원 확인
         const isRegistered = await checkMemberFromGAS(userEmail);
-
+        
         if (isRegistered) {
-            // 등록회원: 원래 가려던 메뉴 또는 홈으로
+            // 등록된 회원이면 원래 가려던 페이지로
             const targetTab = localStorage.getItem('redirect_tab') || 'home';
             localStorage.removeItem('redirect_tab');
             showTab(targetTab);
         } else {
-            // 미등록회원: 기사등록 유도
-            alert("등록된 회원 정보가 없습니다. 기사 등록 페이지로 이동합니다.");
+            // 미등록 회원이면 기사등록 화면으로
+            alert("신규 기사님입니다. 기사 등록 페이지로 이동합니다.");
             showTab('register');
         }
     } catch (error) {
-        console.error("인증 처리 중 오류:", error);
+        console.error("회원 조회 실패:", error);
+        // DB 연동 전까지는 테스트를 위해 신규 회원으로 취급
+        showTab('register');
     }
 }
 
-/**
- * GAS 서버 통신: 회원 여부 확인
- */
-async function checkMemberFromGAS(email) {
-    try {
-        const url = `${MEMBER_CHECK_URL}?action=checkMember&email=${encodeURIComponent(email)}`;
-        const response = await fetch(url);
-        const result = await response.json();
-        return result.isRegistered; 
-    } catch (e) {
-        console.error("GAS 연동 에러:", e);
-        return false;
-    }
-}
-
-/**
- * JWT 토큰 디코딩 (구글 사용자 정보 추출)
- */
+// JWT 토큰 파싱 함수
 function parseJwt(token) {
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
         return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
     }).join(''));
+
     return JSON.parse(jsonPayload);
+}
+
+// 백엔드 연동용 함수 (임시 스텁)
+async function checkMemberFromGAS(email) {
+    // 나중에 google.script.run 등을 사용하여 Code.gs 호출
+    // 현재는 테스트를 위해 무조건 false(신규) 반환
+    return false; 
 }
