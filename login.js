@@ -114,40 +114,28 @@ async function checkMemberFromGAS(email) {
 }
 
 
-// 카카오 SDK 초기화
+// 초기화 확인
 if (!Kakao.isInitialized()) {
     Kakao.init(KAKAO_JS_KEY);
 }
 
-// login.js
-
 function loginWithKakao() {
-    // 1. 초기화 확인
-    if (!Kakao.isInitialized()) {
-        Kakao.init(KAKAO_JS_KEY);
-    }
-
-    // 2. v2 SDK에서는 Kakao.Auth.login을 호출하거나 
-    // 직접 authorize를 호출해야 합니다.
-    // 팝업 방식이 차단될 경우를 대비해 authorize 방식을 권장하지만, 
-    // 요구사항에 맞춰 팝업형태로 시도합니다.
-    
+    // v2 SDK에서 팝업을 띄우는 표준 함수
     Kakao.Auth.login({
         success: function(authObj) {
-            console.log('인증 성공', authObj);
+            console.log("카카오 로그인 성공:", authObj);
             
-            // 사용자 정보 가져오기
+            // 사용자 정보 요청
             Kakao.API.request({
                 url: '/v2/user/me',
                 success: async function(res) {
                     const userEmail = res.kakao_account.email;
                     
                     if (!userEmail) {
-                        alert("이메일 정보 제공 동의가 필수입니다.");
+                        alert("이메일 동의가 필요합니다. 설정에서 이메일 제공을 승인해주세요.");
                         return;
                     }
 
-                    console.log("카카오 이메일 추출:", userEmail);
                     localStorage.setItem('imhere_user_email', userEmail);
 
                     // GAS 회원 확인 로직
@@ -163,14 +151,13 @@ function loginWithKakao() {
                     }
                 },
                 fail: function(error) {
-                    console.error('사용자 정보 요청 실패', error);
+                    console.error("사용자 정보 요청 실패:", error);
                 }
             });
         },
         fail: function(err) {
-            console.error('로그인 실패', err);
-            // 만약 여기서 "not a function"이 또 뜬다면 
-            // 현재 로드된 SDK가 Kakao.Auth.authorize만 지원하는 것입니다.
-        }
+            console.error("카카오 로그인 실패:", err);
+            alert("카카오 로그인 중 오류가 발생했습니다.");
+        },
     });
 }
