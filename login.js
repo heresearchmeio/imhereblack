@@ -5,38 +5,11 @@ const MEMBER_CHECK_URL = "https://script.google.com/macros/s/AKfycbzKWJckg7zHVqB
 
 // login.js
 
-// login.js
-
-async function loginWithSNS(platform) {
-    console.log(`${platform} 인증 시작...`);
-    
-    // [참고] 실제 구현 시에는 Firebase Auth 또는 각 SNS SDK 호출
-    // 여기서는 인증 결과로 이메일을 성공적으로 받아왔다고 가정합니다.
-    try {
-        // 임시 테스트용 데이터 (실제 연동 시 SNS에서 받아온 이메일로 대체)
-        const mockResponse = {
-            email: "driver@gmail.com", 
-            isNewUser: false // DB 조회 결과에 따라 결정될 값
-        };
-
-        // 1. LocalStorage에 이메일 저장
-        localStorage.setItem('imhere_user_email', mockResponse.email);
-
-        // 2. 가입 여부 확인 (나중에 Code.gs와 연동)
-        // const checkResult = await checkMemberStatus(mockResponse.email);
-        
-        if (mockResponse.isNewUser) {
-            alert("신규 기사님입니다. 기사 등록 페이지로 이동합니다.");
-            showTab('register');
-        } else {
-            // 3. 원래 보려던 페이지로 이동
-            const targetTab = localStorage.getItem('redirect_tab') || 'home';
-            localStorage.removeItem('redirect_tab'); // 사용 후 삭제
-            showTab(targetTab);
-        }
-    } catch (error) {
-        console.error("인증 실패:", error);
-        alert("인증에 실패했습니다.");
+function loginWithSNS(platform) {
+    if (platform === 'google') {
+        googleLogin();
+    } else {
+        alert(`${platform} 인증은 준비 중입니다.`);
     }
 }
 
