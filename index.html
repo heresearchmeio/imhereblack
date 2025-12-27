@@ -30,6 +30,10 @@
                 <span class="text-xl font-black tracking-tighter text-white">ImHere-Black</span>
             </div>
             <div class="flex items-center gap-1 md:gap-2">
+                <button onclick="showTab('login')" class="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-all">
+                    <i data-lucide="key-round" class="w-4 h-4 text-blue-400"></i>
+                    <span class="text-sm font-bold hidden sm:inline">로그인</span>
+                </button>
                 <button onclick="showTab('schedule')" class="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-all">
                     <i data-lucide="truck" class="w-4 h-4 text-emerald-400"></i>
                     <span class="text-sm font-bold hidden sm:inline">배차현황</span>
@@ -52,8 +56,8 @@
 
     <main id="main-content" class="max-w-6xl mx-auto p-6 w-full flex-grow">
         <div id="home" class="tab-content active"></div>
-        <div id="register" class="tab-content"></div>
         <div id="login" class="tab-content"></div>
+        <div id="register" class="tab-content"></div>
         <div id="about" class="tab-content"></div>
         <div id="schedule" class="tab-content"></div>
         <div id="notice" class="tab-content"></div>
