@@ -1,0 +1,27 @@
+<div class="space-y-6">
+    <div class="glass-card rounded-[2rem] p-8 md:p-12 border-l-4 border-emerald-500 overflow-hidden relative">
+        <div class="relative z-10">
+            <span class="bg-emerald-500/20 text-emerald-400 text-xs font-bold px-3 py-1 rounded-full mb-4 inline-block">24/7 전문 기사 서비스</span>
+            <h2 class="text-3xl md:text-4xl font-black mb-4 leading-tight">멈춰있는 시간을<br>안전한 이동으로 연결합니다.</h2>
+            <p class="text-gray-400 text-base md:text-lg max-w-2xl mb-8 leading-relaxed">낮의 번잡함부터 밤의 정적까지, <span class="text-white">ImHere-Black</span>은 <br class="hidden md:block"> 소중한 고객님과 기사님의 성실함을 가장 신뢰 있는 방식으로 잇습니다.</p>
+            <div class="flex gap-4">
+                <button onclick="showTab('schedule')" class="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-3 rounded-xl font-bold transition-all flex items-center gap-2"><i data-lucide="play-circle" class="w-5 h-5"></i> 배차 현황</button>
+                <button onclick="showTab('register')" class="bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-xl font-bold transition-all flex items-center gap-2"><i data-lucide="user-plus" class="w-5 h-5"></i> 기사 등록</button>
+            </div>
+        </div>
+    </div>
+    <div class="grid md:grid-cols-2 gap-6">
+        <div class="glass-card rounded-2xl p-8">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="flex items-center gap-2 font-bold text-lg"><i data-lucide="bell-ring" class="text-amber-500"></i>알림 </h3>
+                <span onclick="showTab('notice')" class="text-xs text-white-500 cursor-pointer">더보기</span>
+            </div>
+        </div>
+        <div class="glass-card rounded-2xl p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="flex items-center gap-2 font-bold text-lg"><i data-lucide="info" class="text-blue-500"></i> 블랙 브리핑</h3>
+                <span onclick="showTab('notice')" class="text-xs text-gray-500 cursor-pointer">더보기</span>
+            </div>
+        </div>
+    </div>
+</div>
