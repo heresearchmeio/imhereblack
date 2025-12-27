@@ -1,15 +1,55 @@
-// 탭 전환 함수
-function showTab(tabId) {
-    document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-    const target = document.getElementById(tabId);
-    if(target) {
-        target.classList.add('active');
-        window.scrollTo({top: 0, behavior: 'smooth'});
-        
-        // 알림 탭 진입 시 데이터 로드
-        if(tabId === 'notice') fetchBloggerNotice();
+// 초기 로드 시 탭 내용 가져오기
+document.addEventListener('DOMContentLoaded', () => {
+    lucide.createIcons();
+    // 초기 탭 로드
+    loadTabData('home');
+});
+
+// 외부 HTML 파일을 로드하여 특정 ID에 넣는 함수
+async function loadTabData(tabId) {
+    const container = document.getElementById(tabId);
+    if (container.innerHTML.trim() === "") { // 내용이 빌 때만 로드
+        try {
+            const response = await fetch(`${tabId}.html`);
+            if (response.ok) {
+                container.innerHTML = await response.text();
+                lucide.createIcons(); // 아이콘 재생성
+            }
+        } catch (error) {
+            console.error('Error loading tab:', error);
+        }
     }
 }
+// 탭 전환 함수
+function showTab(tabId) {
+    // 모든 탭 숨기기
+    document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+    });
+
+    // 선택된 탭 데이터 로드 및 활성화
+    loadTabData(tabId);
+    document.getElementById(tabId).classList.add('active');
+    
+    // 페이지 최상단 이동
+    window.scrollTo(0, 0);
+
+    //알림 탭 진입 시 데이터 로드
+    if(tabId === 'notice') fetchBloggerNotice();
+}
+
+// // 탭 전환 함수
+// function showTab(tabId) {
+//     document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+//     const target = document.getElementById(tabId);
+//     if(target) {
+//         target.classList.add('active');
+//         window.scrollTo({top: 0, behavior: 'smooth'});
+        
+//         // 알림 탭 진입 시 데이터 로드
+//         if(tabId === 'notice') fetchBloggerNotice();
+//     }
+// }
 
 // --- 구글 블로거 연동 설정 ---
 const BLOG_NAME = 'architectstory'; // 블로그 ID
