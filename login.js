@@ -2,68 +2,47 @@
 
 const GOOGLE_CLIENT_ID = "1016049886108-ttqmojmq4u9b8uiee951d2db08er1fpc.apps.googleusercontent.com"; // 여기에 복사한 ID 입력
 
-function loginWithSNS(platform) {
-    if (platform === 'google') {
-        googleLogin();
+// login.js
+
+// 기존 googleLogin() 함수 대신 수동으로 호출하고 싶을 때 사용
+function initGoogleLogin() {
+    if (typeof google !== 'undefined') {
+        google.accounts.id.initialize({
+            client_id: "YOUR_CLIENT_ID.apps.googleusercontent.com",
+            callback: handleCredentialResponse,
+            ux_mode: "popup",
+            // FedCM 에러 방지를 위한 추가 설정
+            itp_support: true 
+        });
     }
 }
 
-function googleLogin() {
-    google.accounts.id.initialize({
-        client_id: GOOGLE_CLIENT_ID,
-        callback: handleCredentialResponse,
-        // FedCM 정책으로 인한 에러를 방지하기 위해 ux_mode를 지정할 수 있습니다.
-        ux_mode: "popup" 
-    });
-
-    // 💡 팝업 방식(prompt) 대신 강제 로그인을 유도하려면 
-    // 아래 팝업을 호출하기 전에 UI에 버튼을 렌더링하는 것이 권장됩니다.
-    google.accounts.id.prompt((notification) => {
-        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-            console.log("자동 팝업이 차단됨. 버튼 클릭 로그인을 유도하세요.");
-            // 팝업이 차단된 경우, 별도의 로그인 버튼을 표시하거나 재시도 로직을 넣을 수 있습니다.
-        }
-    });
-}
-
-// Google에서 인증 정보를 받았을 때 실행되는 콜백
+// 구글 인증 후 실행될 콜백 함수
 async function handleCredentialResponse(response) {
-    // 1. JWT 토큰 해독 (간단한 디코딩을 위해 payload 추출)
-    const responsePayload = parseJwt(response.credential);
-    
-    console.log("ID: " + responsePayload.sub);
-    console.log('Email: ' + responsePayload.email);
-    
-    const userEmail = responsePayload.email;
-
-    // 2. Gmail 여부 확인 (기사님 등록 조건)
-    if (!userEmail.endsWith('@gmail.com')) {
-        alert("기사 등록 및 로그인은 Gmail 계정으로만 가능합니다.");
-        return;
-    }
-
-    // 3. LocalStorage 저장
-    localStorage.setItem('imhere_user_email', userEmail);
-
-    // 4. 백엔드(GAS)에 회원 여부 확인 요청
-    // 이 단계는 나중에 Code.gs API를 만든 후 연결합니다.
     try {
+        const payload = parseJwt(response.credential);
+        console.log("인증 성공:", payload.email);
+        
+        const userEmail = payload.email;
+        if (!userEmail.endsWith('@gmail.com')) {
+            alert("Gmail 계정만 이용 가능합니다.");
+            return;
+        }
+
+        localStorage.setItem('imhere_user_email', userEmail);
+        
+        // 회원 여부 확인 로직 실행 (Code.gs 연동)
         const isRegistered = await checkMemberFromGAS(userEmail);
         
         if (isRegistered) {
-            // 등록된 회원이면 원래 가려던 페이지로
-            const targetTab = localStorage.getItem('redirect_tab') || 'home';
-            localStorage.removeItem('redirect_tab');
-            showTab(targetTab);
+            const target = localStorage.getItem('redirect_tab') || 'home';
+            showTab(target);
         } else {
-            // 미등록 회원이면 기사등록 화면으로
-            alert("신규 기사님입니다. 기사 등록 페이지로 이동합니다.");
+            alert("신규 기사님입니다. 등록 페이지로 이동합니다.");
             showTab('register');
         }
     } catch (error) {
-        console.error("회원 조회 실패:", error);
-        // DB 연동 전까지는 테스트를 위해 신규 회원으로 취급
-        showTab('register');
+        console.error("토큰 처리 중 에러:", error);
     }
 }
 
