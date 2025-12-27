@@ -3,6 +3,11 @@
 const GOOGLE_CLIENT_ID = "1016049886108-ttqmojmq4u9b8uiee951d2db08er1fpc.apps.googleusercontent.com"; // 여기에 복사한 ID 입력
 const MEMBER_CHECK_URL = "https://script.google.com/macros/s/AKfycbzKWJckg7zHVqBLkyz4lRT9oYH5pXZo9FnStDXkrtKvgX3FK2d13hKq8seqciWXdYGR/exec"; 
 
+const GoogleAuthManager = {
+    isInitialized: false,
+    clientId: "1016049886108-ttqmojmq4u9b8uiee951d2db08er1fpc.apps.googleusercontent.com"
+};
+
 let isGoogleInitialized = false;
 
 function loginWithSNS(platform) {
@@ -14,20 +19,39 @@ function loginWithSNS(platform) {
 }
 
 function initializeGoogleSDK() {
-    if (isGoogleInitialized) return; // 이미 초기화됐다면 중단
+    if (GoogleAuthManager.isInitialized) return;
 
-    if (window.google && google.accounts && google.accounts.id) {
+    // window.google 존재 여부 확인 (SDK 로드 확인)
+    if (typeof google !== 'undefined' && google.accounts && google.accounts.id) {
         google.accounts.id.initialize({
-            client_id: GOOGLE_CLIENT_ID,
+            client_id: GoogleAuthManager.clientId,
             callback: handleCredentialResponse,
             use_fedcm_for_prompt: true,
-            // 추가: 원치 않는 팝업 중단을 막기 위해 컨텍스트 지정 가능
-            context: 'signin' 
+            context: 'signin'
         });
-        isGoogleInitialized = true;
-        console.log("Google SDK 초기화 성공");
+        GoogleAuthManager.isInitialized = true;
+        console.log("✅ Google SDK 초기화 완료");
+    } else {
+        // SDK가 아직 안 불려왔다면 0.5초 뒤 재시도
+        setTimeout(initializeGoogleSDK, 500);
     }
 }
+
+// function initializeGoogleSDK() {
+//     if (isGoogleInitialized) return; // 이미 초기화됐다면 중단
+
+//     if (window.google && google.accounts && google.accounts.id) {
+//         google.accounts.id.initialize({
+//             client_id: GOOGLE_CLIENT_ID,
+//             callback: handleCredentialResponse,
+//             use_fedcm_for_prompt: true,
+//             // 추가: 원치 않는 팝업 중단을 막기 위해 컨텍스트 지정 가능
+//             context: 'signin' 
+//         });
+//         isGoogleInitialized = true;
+//         console.log("Google SDK 초기화 성공");
+//     }
+// }
 
 // 페이지 로드 즉시 시도하고, 만약 SDK 로드가 늦어질 경우를 대비해 인터벌 체크
 window.addEventListener('load', initializeGoogleSDK);
