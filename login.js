@@ -1,4 +1,4 @@
-const GOOGLE_CLIENT_ID = "1016049886108-ttqmojmq4u9b8uiee951d2db08er1fpc.apps.googleusercontent.com"; // 여기에 복사한 ID 입력
+// const GOOGLE_CLIENT_ID = "1016049886108-ttqmojmq4u9b8uiee951d2db08er1fpc.apps.googleusercontent.com"; // 여기에 복사한 ID 입력
 const MEMBER_CHECK_URL = "https://script.google.com/macros/s/AKfycbwOpBdwwVHXQvedfBsOZ2HL5t8n2V9ak6bzE6xjudnGyDp31xTC3YZLPgmBBF01a8o4/exec";
 const KAKAO_JS_KEY = "2c0d47df13750dfe8eecba153220473e"; // 복사한 키 입력
 const GAS_URL = MEMBER_CHECK_URL;
@@ -61,8 +61,15 @@ function loginWithKakao() {
                         localStorage.removeItem('redirect_tab');
                         showTab(target);
                     } else {
-                        alert("신규 기사님입니다. 등록 페이지로 이동합니다.");
-                        showTab('register');
+                        // 구글 폼에 이메일 자동 입력되도록 URL 설정
+                        const EMAIL_ENTRY_ID = userEmail; // 본인의 entry ID
+                        const formBaseURL = "https://docs.google.com/forms/d/e/1FAIpQLSewqo8daGxSvz59HXkFb-MXPV8_F0gcZn6wLQ7uNJDvIjE7Wg/viewform?embedded=true";
+                        const fullURL = `${formBaseURL}&${EMAIL_ENTRY_ID}=${encodeURIComponent(userEmail)}`;
+                        
+                        const iframe = document.querySelector('#register iframe');
+                        if (iframe) iframe.src = fullURL;
+            
+                        showTab('register'); // 등록 탭으로 강제 이동// 구글 폼에 이메일 자동 입력되도록 URL 설정
                     }
                     // ----------------------------
                 },
