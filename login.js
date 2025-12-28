@@ -66,25 +66,44 @@ function loginWithKakao() {
     });
 }
 
-// 백엔드 연동용 함수 (동일)
-async function checkMemberFromGAS(email) {
-    try {
-        // 2. 이메일을 파라미터로 포함하여 호출 (CORS 이슈 방지를 위해 보통 GET 사용)
-        const response = await fetch(`${GAS_URL}?email=${encodeURIComponent(email)}`);
+function checkMemberFromGAS(email) {
+    return new Promise((resolve, reject) => {
+        const callbackName = 'jsonpCallback_' + Math.round(100000 * Math.random());
         
-        if (!response.ok) {
-            throw new Error('네트워크 응답이 좋지 않습니다.');
-        }
+        // 1. 전역 범위에 콜백 함수 정의
+        window[callbackName] = function(data) {
+            delete window[callbackName]; // 사용 후 삭제
+            document.body.removeChild(script); // 스크립트 태그 삭제
+            resolve(data.isRegistered);
+        };
 
-        // 3. GAS에서 반환한 JSON 데이터 파싱 (예: { result: true } 또는 { result: false })
-        const data = await response.json();
-        
-        return data.result; // true 또는 false 반환
-    } catch (error) {
-        console.error("회원 확인 중 오류 발생:", error);
-        return false; // 오류 발생 시 기본적으로 권한 없음 처리
-    }
+        // 2. 스크립트 태그 생성 및 실행
+        const script = document.createElement('script');
+        script.src = `${GAS_URL}?email=${encodeURIComponent(email)}&callback=${callbackName}`;
+        script.onerror = () => reject(new Error('GAS 통신 실패 (JSONP)'));
+        document.body.appendChild(script);
+    });
 }
+
+// 백엔드 연동용 함수 (동일)
+// async function checkMemberFromGAS(email) {
+//     try {
+//         // 2. 이메일을 파라미터로 포함하여 호출 (CORS 이슈 방지를 위해 보통 GET 사용)
+//         const response = await fetch(`${GAS_URL}?email=${encodeURIComponent(email)}`);
+        
+//         if (!response.ok) {
+//             throw new Error('네트워크 응답이 좋지 않습니다.');
+//         }
+
+//         // 3. GAS에서 반환한 JSON 데이터 파싱 (예: { result: true } 또는 { result: false })
+//         const data = await response.json();
+        
+//         return data.result; // true 또는 false 반환
+//     } catch (error) {
+//         console.error("회원 확인 중 오류 발생:", error);
+//         return false; // 오류 발생 시 기본적으로 권한 없음 처리
+//     }
+// }
 
 
 
