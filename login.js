@@ -19,13 +19,28 @@ if (!Kakao.isInitialized()) {
     Kakao.init(KAKAO_JS_KEY);
 }
 
+async function checkRegistration(userEmail) {
+    try {
+        // GAS_URL은 새 배포에서 받은 최신 URL이어야 합니다.
+        const response = await fetch(`${GAS_URL}?email=${encodeURIComponent(userEmail)}`, {
+            method: 'GET',
+            mode: 'cors', // 반드시 cors 모드
+            redirect: 'follow' // GAS의 리다이렉트 처리에 필수
+        });
+
+        if (!response.ok) throw new Error('네트워크 응답에 문제가 있습니다.');
+
+        const data = await response.json(); // 이제 정상적으로 JSON을 읽습니다.
+        return data.isRegistered;
+    } catch (error) {
+        console.error("회원 확인 중 에러:", error);
+        return false;
+    }
+}
+
 function loginWithKakao() {
-    // v2 SDK에서 팝업을 띄우는 표준 함수
     Kakao.Auth.login({
         success: function(authObj) {
-            console.log("카카오 로그인 성공:", authObj);
-            
-            // 사용자 정보 요청
             Kakao.API.request({
                 url: '/v2/user/me',
                 success: async function(res) {
@@ -38,12 +53,8 @@ function loginWithKakao() {
 
                     localStorage.setItem('imhere_user_email', userEmail);
 
-                    // GAS 회원 확인 로직
-                    const response = await fetch(`${GAS_URL}?email=${encodeURIComponent(userEmail)}`, {
-                        method: 'GET',
-                        mode: 'cors', // CORS 정책 허용
-                        redirect: 'follow' // GAS 리다이렉션 처리에 필수
-                    });
+                    // --- 수정된 회원 확인 로직 ---
+                    const isRegistered = await checkRegistration(userEmail);
 
                     if (isRegistered) {
                         const target = localStorage.getItem('redirect_tab') || 'home';
@@ -53,6 +64,7 @@ function loginWithKakao() {
                         alert("신규 기사님입니다. 등록 페이지로 이동합니다.");
                         showTab('register');
                     }
+                    // ----------------------------
                 },
                 fail: function(error) {
                     console.error("사용자 정보 요청 실패:", error);
