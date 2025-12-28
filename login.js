@@ -1,5 +1,5 @@
 const GOOGLE_CLIENT_ID = "1016049886108-ttqmojmq4u9b8uiee951d2db08er1fpc.apps.googleusercontent.com"; // 여기에 복사한 ID 입력
-const MEMBER_CHECK_URL = "https://script.google.com/macros/s/AKfycbzKWJckg7zHVqBLkyz4lRT9oYH5pXZo9FnStDXkrtKvgX3FK2d13hKq8seqciWXdYGR/exec";
+const MEMBER_CHECK_URL = "https://script.google.com/macros/s/AKfycbwOpBdwwVHXQvedfBsOZ2HL5t8n2V9ak6bzE6xjudnGyDp31xTC3YZLPgmBBF01a8o4/exec";
 const KAKAO_JS_KEY = "2c0d47df13750dfe8eecba153220473e"; // 복사한 키 입력
 const GAS_URL = MEMBER_CHECK_URL;
 
