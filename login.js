@@ -1,6 +1,7 @@
 const GOOGLE_CLIENT_ID = "1016049886108-ttqmojmq4u9b8uiee951d2db08er1fpc.apps.googleusercontent.com"; // 여기에 복사한 ID 입력
 const MEMBER_CHECK_URL = "https://script.google.com/macros/s/AKfycbzKWJckg7zHVqBLkyz4lRT9oYH5pXZo9FnStDXkrtKvgX3FK2d13hKq8seqciWXdYGR/exec"; 
 const KAKAO_JS_KEY = "2c0d47df13750dfe8eecba153220473e"; // 복사한 키 입력
+const GAS_URL = MEMBER_CHECK_URL;
 
 function loginWithSNS(platform) {
     if (platform === 'google') {
@@ -67,9 +68,6 @@ function loginWithKakao() {
 
 // 백엔드 연동용 함수 (동일)
 async function checkMemberFromGAS(email) {
-    // 1. Google Apps Script 배포 후 받은 웹 앱 URL을 입력하세요.
-    const GAS_URL = MEMBER_CHECK_URL;
-
     try {
         // 2. 이메일을 파라미터로 포함하여 호출 (CORS 이슈 방지를 위해 보통 GET 사용)
         const response = await fetch(`${GAS_URL}?email=${encodeURIComponent(email)}`);
