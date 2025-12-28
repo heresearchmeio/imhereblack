@@ -2,6 +2,7 @@
 const MEMBER_CHECK_URL = "https://script.google.com/macros/s/AKfycbwOpBdwwVHXQvedfBsOZ2HL5t8n2V9ak6bzE6xjudnGyDp31xTC3YZLPgmBBF01a8o4/exec";
 const KAKAO_JS_KEY = "2c0d47df13750dfe8eecba153220473e"; // 복사한 키 입력
 const GAS_URL = MEMBER_CHECK_URL;
+const REGISTER_FORM_URI = "https://docs.google.com/forms/d/e/1FAIpQLSewqo8daGxSvz59HXkFb-MXPV8_F0gcZn6wLQ7uNJDvIjE7Wg/viewform?embedded=true"
 
 function loginWithSNS(platform) {
     if (platform === 'google') {
@@ -38,7 +39,7 @@ async function checkRegistration(userEmail) {
     }
 }
 
-function loginWithKakao() {
+async function loginWithKakao() {
     Kakao.Auth.login({
         success: function(authObj) {
             Kakao.API.request({
@@ -47,23 +48,36 @@ function loginWithKakao() {
                     const userEmail = res.kakao_account.email;
                     
                     if (!userEmail) {
-                        alert("이메일 동의가 필요합니다. 설정에서 이메일 제공을 승인해주세요.");
+                        alert("이메일 정보 제공 동의가 필요합니다.");
                         return;
                     }
 
                     localStorage.setItem('imhere_user_email', userEmail);
 
-                    // --- 수정된 회원 확인 로직 ---
-                    const isRegistered = await checkRegistration(userEmail);
+                    // [중요] await를 반드시 확인하세요!
+                    console.log("서버에 이메일 확인 요청 중...", userEmail);
+                    const isRegistered = await checkRegistration(userEmail); 
+                    
+                    console.log("결과값 (isRegistered):", isRegistered);
 
-                    if (isRegistered) {
-                        const target = localStorage.getItem('redirect_tab') || 'home';
-                        localStorage.removeItem('redirect_tab');
-                        showTab(target);
+                    // 명확하게 true일 때만 통과시킴
+                    if (isRegistered === true) {
+                        console.log("등록된 회원입니다.");
+                        showTab('home');
                     } else {
-                        showTab('register'); // 등록 탭으로 강제 이동// 구글 폼에 이메일 자동 입력되도록 URL 설정
+                        console.log("미등록 회원입니다. 등록 폼으로 보냅니다.");
+                        
+                        // 구글 폼 주소 세팅 (이메일 자동입력 포함)
+                        const EMAIL_ENTRY_ID = "entry.1030768997"; 
+                        const formBaseURL = REGISTER_FORM_URI;
+                        const fullURL = `${formBaseURL}&${EMAIL_ENTRY_ID}=${encodeURIComponent(userEmail)}`;
+                        
+                        const iframe = document.querySelector('#register iframe');
+                        if (iframe) iframe.src = fullURL;
+
+                        alert("신규 기사님입니다. 등록 페이지로 이동합니다.");
+                        showTab('register');
                     }
-                    // ----------------------------
                 },
                 fail: function(error) {
                     console.error("사용자 정보 요청 실패:", error);
@@ -72,10 +86,48 @@ function loginWithKakao() {
         },
         fail: function(err) {
             console.error("카카오 로그인 실패:", err);
-            alert("카카오 로그인 중 오류가 발생했습니다.");
         },
     });
 }
+
+// function loginWithKakao() {
+//     Kakao.Auth.login({
+//         success: function(authObj) {
+//             Kakao.API.request({
+//                 url: '/v2/user/me',
+//                 success: async function(res) {
+//                     const userEmail = res.kakao_account.email;
+                    
+//                     if (!userEmail) {
+//                         alert("이메일 동의가 필요합니다. 설정에서 이메일 제공을 승인해주세요.");
+//                         return;
+//                     }
+
+//                     localStorage.setItem('imhere_user_email', userEmail);
+
+//                     // --- 수정된 회원 확인 로직 ---
+//                     const isRegistered = await checkRegistration(userEmail);
+
+//                     if (isRegistered) {
+//                         const target = localStorage.getItem('redirect_tab') || 'home';
+//                         localStorage.removeItem('redirect_tab');
+//                         showTab(target);
+//                     } else {
+//                         showTab('register'); // 등록 탭으로 강제 이동// 구글 폼에 이메일 자동 입력되도록 URL 설정
+//                     }
+//                     // ----------------------------
+//                 },
+//                 fail: function(error) {
+//                     console.error("사용자 정보 요청 실패:", error);
+//                 }
+//             });
+//         },
+//         fail: function(err) {
+//             console.error("카카오 로그인 실패:", err);
+//             alert("카카오 로그인 중 오류가 발생했습니다.");
+//         },
+//     });
+// }
 
 function checkMemberFromGAS(email) {
     return new Promise((resolve, reject) => {
