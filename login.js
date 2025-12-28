@@ -61,14 +61,6 @@ function loginWithKakao() {
                         localStorage.removeItem('redirect_tab');
                         showTab(target);
                     } else {
-                        // 구글 폼에 이메일 자동 입력되도록 URL 설정
-                        const EMAIL_ENTRY_ID = userEmail; // 본인의 entry ID
-                        const formBaseURL = "https://docs.google.com/forms/d/e/1FAIpQLSewqo8daGxSvz59HXkFb-MXPV8_F0gcZn6wLQ7uNJDvIjE7Wg/viewform?embedded=true";
-                        const fullURL = `${formBaseURL}&${EMAIL_ENTRY_ID}=${encodeURIComponent(userEmail)}`;
-                        
-                        const iframe = document.querySelector('#register iframe');
-                        if (iframe) iframe.src = fullURL;
-            
                         showTab('register'); // 등록 탭으로 강제 이동// 구글 폼에 이메일 자동 입력되도록 URL 설정
                     }
                     // ----------------------------
