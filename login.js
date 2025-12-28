@@ -39,7 +39,7 @@ function loginWithKakao() {
                     localStorage.setItem('imhere_user_email', userEmail);
 
                     // GAS 회원 확인 로직
-                    const response = await fetch(`${GAS_URL}?email=${encodeURIComponent(email)}`, {
+                    const response = await fetch(`${GAS_URL}?email=${encodeURIComponent(userEmail)}`, {
                         method: 'GET',
                         mode: 'cors', // CORS 정책 허용
                         redirect: 'follow' // GAS 리다이렉션 처리에 필수
