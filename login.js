@@ -54,7 +54,7 @@ function loginWithKakao() {
                     localStorage.setItem('imhere_user_email', userEmail);
 
                     // --- 수정된 회원 확인 로직 ---
-                    const isRegistered = await checkRegistration(userEmail);
+                    const isRegistered = await checkMemberFromGAS(userEmail);
 
                     if (isRegistered) {
                         const target = localStorage.getItem('redirect_tab') || 'home';
