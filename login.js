@@ -27,7 +27,7 @@ async function checkRegistration(userEmail) {
             mode: 'cors', // 반드시 cors 모드
             redirect: 'follow' // GAS의 리다이렉트 처리에 필수
         });
-
+        console.log('response : ' + response);
         if (!response.ok) throw new Error('네트워크 응답에 문제가 있습니다.');
 
         const data = await response.json(); // 이제 정상적으로 JSON을 읽습니다.
@@ -54,7 +54,7 @@ function loginWithKakao() {
                     localStorage.setItem('imhere_user_email', userEmail);
 
                     // --- 수정된 회원 확인 로직 ---
-                    const isRegistered = await checkMemberFromGAS(userEmail);
+                    const isRegistered = await checkRegistration(userEmail);
 
                     if (isRegistered) {
                         const target = localStorage.getItem('redirect_tab') || 'home';
